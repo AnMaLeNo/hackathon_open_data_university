@@ -1,5 +1,5 @@
 from qdrant_client import QdrantClient
-from qdrant_client.models import Filter, FieldCondition, MatchValue, PointStruct, PayloadSchemaType, VectorParams, Distance
+from qdrant_client.models import Filter, FieldCondition, MatchValue, Range, PointStruct, PayloadSchemaType, VectorParams, Distance
 import json
 import pandas as pd
 from qdrant_client.http import models
@@ -105,64 +105,77 @@ def rechercher_reactions_similaires(
     client: QdrantClient,
     vecteur_requete: list[float],
     collection_name: str = "index_reactions",
-    conversation_pair_id: str = None,
-    limit: int = 5,
+    strict_constraints: dict = None,
+    limit: int = 100,
     score_threshold: float = 0.65
 ) -> list[dict]:
     """
-    Effectue une recherche sémantique vectorielle dans Qdrant.
+    Exécute une recherche sémantique vectorielle approximative (HNSW) couplée à 
+    un filtrage strict de la charge utile (Payload Filtering).
     
     Args:
-        client: L'instance du client Qdrant.
-        vecteur_requete: Le vecteur de la question encodée (liste de floats).
-        collection_name: Le nom de la collection Qdrant.
-        conversation_pair_id: (Optionnel) ID de la conversation pour filtrer les résultats.
-        limit: Nombre maximum de résultats à retourner.
-        score_threshold: Seuil de similarité minimum (0 à 1).
+        client: Instance active du QdrantClient.
+        vecteur_requete: Vecteur d'enchâssement de la requête projeté dans R^d.
+        collection_name: Identifiant de la collection cible.
+        strict_constraints: Dictionnaire des contraintes d'exclusion logiques.
+                            Exemple: {"is_open_source": True, "energy_cost_kwh": {"lt": 150}}
+        limit: Cardinalité k de l'ensemble de voisinage K retourné.
+        score_threshold: Valeur minimale de similarité cosinus (w_i).
         
     Returns:
-        Une liste de dictionnaires représentant les résultats (format JSON-friendly).
+        Liste de dictionnaires documentant les métadonnées du voisinage local.
     """
     
-    # 1. Construction du filtre (si le paramètre est fourni)
-    query_filter = None
-    if conversation_pair_id:
-        # On demande à Qdrant de chercher UNIQUEMENT dans les payloads qui ont ce conversation_pair_id
-        query_filter = Filter(
-            must=[
-                FieldCondition(
-                    key="conversation_pair_id",
-                    match=MatchValue(value=conversation_pair_id)
+    # 1. Construction du graphe de conditions logiques
+    must_conditions = []
+    
+    if strict_constraints:
+        for key, condition in strict_constraints.items():
+            if isinstance(condition, dict):
+                # Implémentation des opérateurs d'inéquation scalaire (Range)
+                range_params = {}
+                if "lt" in condition: range_params["lt"] = condition["lt"]
+                if "gt" in condition: range_params["gt"] = condition["gt"]
+                if "lte" in condition: range_params["lte"] = condition["lte"]
+                if "gte" in condition: range_params["gte"] = condition["gte"]
+                
+                must_conditions.append(
+                    FieldCondition(key=key, range=Range(**range_params))
                 )
-            ]
-        )
+            else:
+                # Implémentation de l'égalité stricte pour les booléens ou chaînes
+                must_conditions.append(
+                    FieldCondition(key=key, match=MatchValue(value=condition))
+                )
 
-    # 2. Exécution de la recherche vectorielle + filtrage
+    # Instanciation du filtre avec intersection logique (AND)
+    query_filter = Filter(must=must_conditions) if must_conditions else None
+
+    # 2. Exécution de la projection vectorielle contrainte
     resultats_bruts = client.query_points(
         collection_name=collection_name,
         query=vecteur_requete,
-        query_filter=query_filter,  # Application du filtre ici !
+        query_filter=query_filter,
         limit=limit,
         score_threshold=score_threshold,
         with_payload=True
     ).points
 
-    # 3. Formatage de la réponse (Conversion des objets Qdrant en Dictionnaires natifs Python)
+    # 3. Extraction et conversion des données de réaction pour l'ingénierie de récompense
     resultats_formates = []
     
     for res in resultats_bruts:
         item = {
             "id": res.id,
-            "score": round(res.score, 4), # Arrondi pour un JSON plus propre
+            "score": round(res.score, 4),
             "question_content": res.payload.get("question_content"),
             "conversation_pair_id": res.payload.get("conversation_pair_id"),
             "refers_to_model": res.payload.get("refers_to_model"),
             "model_pos": res.payload.get("model_pos"),
+            
+            # Variables de la fonction de récompense sémantique R(q_i, m)
             "liked": res.payload.get("liked"),
             "disliked": res.payload.get("disliked"),
-            "comment": res.payload.get("comment"),
-            
-            # --- Nouveaux champs récupérés ---
             "useful": res.payload.get("useful"),
             "creative": res.payload.get("creative"),
             "clear_formatting": res.payload.get("clear_formatting"),
