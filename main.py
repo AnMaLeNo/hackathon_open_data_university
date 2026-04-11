@@ -3,7 +3,7 @@ from qdrant_client import QdrantClient
 import json
 
 from tools import rechercher_reactions_similaires, indexer_corpus
-from analyse import analyser_meilleure_ia
+from analyse import analyser_meilleure_ia, modeliser_recompense_semantique
 
 
 def main():
@@ -40,7 +40,7 @@ def main():
         )
         print(json.dumps(resultats, indent=2, ensure_ascii=False))
         print("\n" + "-" * 50 + "\n")
-        analyse = analyser_meilleure_ia(resultats)
+        analyse = modeliser_recompense_semantique(resultats)
         print("resultat de l'analyse: " + json.dumps(analyse, indent=2, ensure_ascii=False))
 
         # --- RECHERCHE avec id--
