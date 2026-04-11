@@ -3,7 +3,7 @@ from qdrant_client import QdrantClient
 import json
 
 from tools import rechercher_reactions_similaires, indexer_corpus
-from analyse import analyser_meilleure_ia, modeliser_recompense_semantique
+from analyse import analyser_meilleure_ia, modeliser_recompense_semantique, optimiser_routage_topsis
 
 
 def main():
@@ -40,7 +40,8 @@ def main():
         )
         print(json.dumps(resultats, indent=2, ensure_ascii=False))
         print("\n" + "-" * 50 + "\n")
-        analyse = modeliser_recompense_semantique(resultats)
+        analyse = resultats_phase_2 = modeliser_recompense_semantique(resultats)
+        #analyse = optimiser_routage_topsis(resultats_phase_2, {}, [], {}, {})
         print("resultat de l'analyse: " + json.dumps(analyse, indent=2, ensure_ascii=False))
 
         # --- RECHERCHE avec id--

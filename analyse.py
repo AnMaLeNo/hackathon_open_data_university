@@ -1,4 +1,6 @@
-from typing import Dict, List, Any, Union
+from typing import Dict, List, Any, Union, Tuple
+import numpy as np
+
 
 def analyser_meilleure_ia(reactions_similaires: list[dict]) -> dict:
     """
@@ -176,3 +178,113 @@ def modeliser_recompense_semantique(
             }
 
     return resultats_analytiques
+
+
+
+
+def deriver_poids_ahp(matrice_comparaison: np.ndarray) -> np.ndarray:
+    """
+    Résout le système d'équations de l'Analytic Hierarchy Process (AHP) 
+    pour extraire le vecteur de poids normalisé W via le calcul des valeurs propres.
+    
+    Args:
+        matrice_comparaison: Matrice carrée (n x n) des comparaisons par paires.
+        
+    Returns:
+        Vecteur propre principal normalisé (somme = 1).
+    """
+    # Calcul du spectre de la matrice (valeurs propres et vecteurs propres)
+    valeurs_propres, vecteurs_propres = np.linalg.eig(matrice_comparaison)
+    
+    # Isolation de la valeur propre maximale réelle
+    index_max = np.argmax(np.real(valeurs_propres))
+    vecteur_propre_principal = np.real(vecteurs_propres[:, index_max])
+    
+    # Normalisation L1 du vecteur
+    vecteur_poids_w = vecteur_propre_principal / np.sum(vecteur_propre_principal)
+    return vecteur_poids_w
+
+
+
+
+def optimiser_routage_topsis(
+    resultats_phase_2: Dict[str, Dict[str, Union[float, int]]],
+    metriques_physiques: Dict[str, Dict[str, float]],
+    matrice_ahp: np.ndarray,
+    vecteur_directions: List[int],
+    noms_criteres: List[str]
+) -> List[Tuple[str, float]]:
+    """
+    Exécute l'algorithme TOPSIS pour dériver le coefficient de proximité euclidienne C_i.
+    
+    Args:
+        resultats_phase_2: Données issues de `modeliser_recompense_semantique`.
+        metriques_physiques: Dictionnaire des coûts matériels par modèle (ex: énergie, latence).
+        matrice_ahp: Matrice carrée documentant l'arbitrage utilisateur entre les critères.
+        vecteur_directions: Liste d'entiers (1 pour maximiser, -1 pour minimiser) par critère.
+        noms_criteres: Ordre strict des attributs pour l'alignement matriciel.
+        
+    Returns:
+        Liste de tuples (identifiant_modele, score_C_i) triée par ordre décroissant de performance.
+    """
+    
+    # 1. Intersection des ensembles d'évaluation
+    modeles_candidats = [m for m in resultats_phase_2.keys() if m in metriques_physiques]
+    if not modeles_candidats:
+        return []
+
+    nombre_modeles = len(modeles_candidats)
+    nombre_criteres = len(noms_criteres)
+    
+    # 2. Étape A : Construction de la matrice de décision X
+    matrice_X = np.zeros((nombre_modeles, nombre_criteres))
+    
+    for i, modele in enumerate(modeles_candidats):
+        donnees_semantiques = resultats_phase_2[modele]
+        donnees_physiques = metriques_physiques[modele]
+        
+        # Agrégation dynamique selon l'ordre strict de noms_criteres
+        dictionnaire_fusionne = {**donnees_semantiques, **donnees_physiques}
+        for j, critere in enumerate(noms_criteres):
+            matrice_X[i, j] = dictionnaire_fusionne.get(critere, 0.0)
+
+    # 3. Étape B : Normalisation vectorielle (r_ij)
+    normes_euclidiennes = np.linalg.norm(matrice_X, axis=0)
+    # Prévention de la division par zéro par l'injection d'epsilon
+    normes_euclidiennes[normes_euclidiennes == 0] = np.finfo(float).eps 
+    matrice_R = matrice_X / normes_euclidiennes
+
+    # 4. Étape C : Application des poids AHP (v_ij = W_j * r_ij)
+    vecteur_poids_W = deriver_poids_ahp(matrice_ahp)
+    matrice_V = matrice_R * vecteur_poids_W
+
+    # 5. Étape D : Détermination des solutions idéales positives (A*) et négatives (A-)
+    vecteur_directions_np = np.array(vecteur_directions)
+    
+    solution_ideale_positive = np.zeros(nombre_criteres)
+    solution_ideale_negative = np.zeros(nombre_criteres)
+    
+    for j in range(nombre_criteres):
+        if vecteur_directions_np[j] == 1: # Maximisation (ex: score_semantique)
+            solution_ideale_positive[j] = np.max(matrice_V[:, j])
+            solution_ideale_negative[j] = np.min(matrice_V[:, j])
+        else: # Minimisation (ex: empreinte_energetique)
+            solution_ideale_positive[j] = np.min(matrice_V[:, j])
+            solution_ideale_negative[j] = np.max(matrice_V[:, j])
+
+    # 6. Étape E : Calcul des distances euclidiennes (D* et D-)
+    distances_positives = np.sqrt(np.sum((matrice_V - solution_ideale_positive)**2, axis=1))
+    distances_negatives = np.sqrt(np.sum((matrice_V - solution_ideale_negative)**2, axis=1))
+
+    # 7. Étape F : Dérivation du coefficient de proximité C_i
+    # L'ajout d'une constante epsilon au dénominateur sécurise les singularités mathématiques.
+    scores_closeness_C = distances_negatives / (distances_positives + distances_negatives + np.finfo(float).eps)
+
+    # Structuration et ordonnancement topologique du classement
+    classement_final = [
+        (modeles_candidats[i], round(float(scores_closeness_C[i]), 6)) 
+        for i in range(nombre_modeles)
+    ]
+    classement_final.sort(key=lambda x: x[1], reverse=True)
+
+    return classement_final
