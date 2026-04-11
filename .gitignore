@@ -1,0 +1,6 @@
+database/
+base_vectorielle/
+backup/
+qdrant_storage/
+venv/
+__pycache__/
