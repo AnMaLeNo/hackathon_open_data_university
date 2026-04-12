@@ -103,8 +103,8 @@ def main():
         resultats = rechercher_reactions_similaires(
             client=client,
             vecteur_requete=vecteur,
-            collection_name="index_reactions_comment",
-            limit=100
+            collection_name="index_reactions_question_content",
+            limit=1000
         )
         print(json.dumps(resultats, indent=2, ensure_ascii=False))
         print("\n" + "-" * 50 + "\n")
