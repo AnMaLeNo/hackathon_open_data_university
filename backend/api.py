@@ -120,16 +120,18 @@ async def evaluer_prompt(request: PromptRequest):
             score_threshold=request.score_threshold
         )
 
-        # 3. Groupement des question_content par modèle (avant agrégation)
+        # 3. Groupement des question_content + score par modèle (avant agrégation)
         questions_par_modele: dict = {}
         for r in resultats:
             modele = r.get("refers_to_model")
             question = r.get("question_content")
+            score = r.get("score")
             if modele and question:
                 if modele not in questions_par_modele:
                     questions_par_modele[modele] = []
-                if question not in questions_par_modele[modele] and len(questions_par_modele[modele]) < 3:
-                    questions_par_modele[modele].append(question)
+                already = [e["question"] for e in questions_par_modele[modele]]
+                if question not in already and len(questions_par_modele[modele]) < 3:
+                    questions_par_modele[modele].append({"question": question, "score": score})
 
         # 4. Analyse Sémantique
         if not resultats:
@@ -185,16 +187,18 @@ async def obtenir_meilleur_modele(request: RoutageRequest):
                 "questions_par_modele": {}
             }
 
-        # 2. Groupement des question_content par modèle (avant agrégation)
+        # 2. Groupement des question_content + score par modèle (avant agrégation)
         questions_par_modele: dict = {}
         for r in resultats:
             modele = r.get("refers_to_model")
             question = r.get("question_content")
+            score = r.get("score")
             if modele and question:
                 if modele not in questions_par_modele:
                     questions_par_modele[modele] = []
-                if question not in questions_par_modele[modele] and len(questions_par_modele[modele]) < 3:
-                    questions_par_modele[modele].append(question)
+                already = [e["question"] for e in questions_par_modele[modele]]
+                if question not in already and len(questions_par_modele[modele]) < 3:
+                    questions_par_modele[modele].append({"question": question, "score": score})
 
         # 3. Calcul du score sémantique de base
         resultats_phase_2 = modeliser_recompense_semantique(resultats)

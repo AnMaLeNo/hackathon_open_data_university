@@ -27,7 +27,7 @@ interface ApiResponse {
   modele_recommande?: string;
   score_topsis?: number;
   classement_complet?: [string, number][];
-  questions_par_modele?: Record<string, string[]>;
+  questions_par_modele?: Record<string, { question: string; score: number }[]>;
 }
 
 const AHP_PROFILES = {
@@ -320,10 +320,13 @@ function App() {
                            </span>
                            {result.questions_par_modele?.[modele] && result.questions_par_modele[modele].length > 0 && (
                              <ul className="inline-matched-questions">
-                               {result.questions_par_modele[modele].map((q, qi) => (
+                               {result.questions_par_modele[modele].map((entry, qi) => (
                                  <li key={qi} className="inline-matched-question">
                                    <span className="inline-q-index">{qi + 1}</span>
-                                   <span className="inline-q-text">{q}</span>
+                                   <span className="inline-q-text">
+                                     {entry.question}
+                                     <span className="inline-q-score">({entry.score.toFixed(3)})</span>
+                                   </span>
                                  </li>
                                ))}
                              </ul>
@@ -375,10 +378,13 @@ function App() {
                         <span>{item[0]}</span>
                         {result.questions_par_modele?.[item[0]] && result.questions_par_modele[item[0]].length > 0 && (
                           <ul className="inline-matched-questions">
-                            {result.questions_par_modele[item[0]].map((q: string, qi: number) => (
+                            {result.questions_par_modele[item[0]].map((entry: { question: string; score: number }, qi: number) => (
                               <li key={qi} className="inline-matched-question">
                                 <span className="inline-q-index">{qi + 1}</span>
-                                <span className="inline-q-text">{q}</span>
+                                <span className="inline-q-text">
+                                  {entry.question}
+                                  <span className="inline-q-score">({entry.score.toFixed(3)})</span>
+                                </span>
                               </li>
                             ))}
                           </ul>

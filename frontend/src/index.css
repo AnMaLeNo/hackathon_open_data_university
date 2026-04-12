@@ -587,3 +587,13 @@ textarea::placeholder {
   font-style: italic;
   word-break: break-word;
 }
+
+.inline-q-score {
+  margin-left: 6px;
+  font-style: normal;
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: #a78bfa;
+  opacity: 0.85;
+  white-space: nowrap;
+}
