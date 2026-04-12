@@ -1,5 +1,23 @@
 import { useState } from 'react';
 import { Send, Activity, AlertCircle, Cpu, Leaf, Flag, Sliders, LayoutGrid, Award, List, Zap } from 'lucide-react';
+
+// --- Helpers : conversion score → étiquette lisible ---
+
+type Rating = { label: string; color: string; bgColor: string };
+
+/** TOPSIS : score entre 0 et 1 */
+function getTopsisRating(score: number): Rating {
+  if (score >= 0.55) return { label: 'Bon',     color: '#22c55e', bgColor: 'rgba(34,197,94,0.15)'   };
+  if (score >= 0.35) return { label: 'Neutre',  color: '#9ca3af', bgColor: 'rgba(156,163,175,0.15)' };
+  return                    { label: 'Mauvais', color: '#ef4444', bgColor: 'rgba(239,68,68,0.15)'   };
+}
+
+/** Analyse sémantique : score entre -1 et 1.5 */
+function getSemanticRating(score: number): Rating {
+  if (score >= 0.4)  return { label: 'Bon',     color: '#22c55e', bgColor: 'rgba(34,197,94,0.15)'   };
+  if (score >= -0.1) return { label: 'Neutre',  color: '#9ca3af', bgColor: 'rgba(156,163,175,0.15)' };
+  return                    { label: 'Mauvais', color: '#ef4444', bgColor: 'rgba(239,68,68,0.15)'   };
+}
 import './index.css';
 
 interface ApiResponse {
@@ -92,7 +110,7 @@ function App() {
           if (errData && errData.detail) {
             errorMsg = errData.detail;
           }
-        } catch (e) {}
+        } catch (e) { }
         throw new Error(errorMsg);
       }
 
@@ -300,9 +318,11 @@ function App() {
                             Volume de support : {volume} évaluation{volume > 1 ? 's' : ''}
                           </span>
                         </div>
-                        <div className={`model-score ${score > 0.7 ? 'score-high' : score < 0.3 ? 'score-low' : 'score-medium'}`}>
-                          {typeof score === 'number' ? score.toFixed(4) : score}
-                        </div>
+                        <span style={{
+                          fontSize: '0.8rem', fontWeight: 700, padding: '3px 10px',
+                          borderRadius: '20px', color: getSemanticRating(score).color,
+                          background: getSemanticRating(score).bgColor, whiteSpace: 'nowrap'
+                        }}>{getSemanticRating(score).label}</span>
                       </div>
                     );
                   })}
@@ -321,7 +341,15 @@ function App() {
               <div className="winner-info">
                 <h3 className="winner-title">Le choix optimal pour votre profil</h3>
                 <div className="winner-model">{result.modele_recommande}</div>
-                <div className="winner-score">Score TOPSIS de conformité : <strong>{result.score_topsis?.toFixed(4)}</strong></div>
+                <div className="winner-score" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                  <span>Adéquation au profil :</span>
+                  <span style={{
+                    fontWeight: 700, padding: '4px 14px', borderRadius: '20px',
+                    color: getTopsisRating(result.score_topsis ?? 0).color,
+                    background: getTopsisRating(result.score_topsis ?? 0).bgColor,
+                    fontSize: '0.9rem'
+                  }}>{getTopsisRating(result.score_topsis ?? 0).label}</span>
+                </div>
               </div>
             </div>
 
@@ -333,7 +361,11 @@ function App() {
                     <div key={item[0]} className={`ranking-item ${index === 0 ? 'top-1' : ''}`}>
                       <div className="rank">#{index + 1}</div>
                       <div className="model-name">{item[0]}</div>
-                      <div className="model-score score-high">{item[1].toFixed(4)}</div>
+                      <span style={{
+                        fontSize: '0.8rem', fontWeight: 700, padding: '3px 10px',
+                        borderRadius: '20px', color: getTopsisRating(item[1]).color,
+                        background: getTopsisRating(item[1]).bgColor, whiteSpace: 'nowrap'
+                      }}>{getTopsisRating(item[1]).label}</span>
                     </div>
                   ))}
                 </div>
