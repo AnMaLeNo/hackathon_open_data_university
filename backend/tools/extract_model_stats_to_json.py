@@ -55,8 +55,10 @@ def extract_model_stats_to_json(df):
     # 3. Fusionner les deux en un seul DataFrame vertical
     df_combined = pd.concat([df_a, df_b], ignore_index=True)
     
-    # Supprimer les lignes où le nom du modèle est vide (au cas où)
+    # Normalisation et nettoyage des noms de modèles
+    df_combined['model_name'] = df_combined['model_name'].astype(str).str.lower()
     df_combined = df_combined.dropna(subset=['model_name'])
+    df_combined = df_combined[df_combined['model_name'] != 'none']
 
     result_dict = {}
 
@@ -67,13 +69,12 @@ def extract_model_stats_to_json(df):
         total_params = group['total_params'].dropna().iloc[0] if not group['total_params'].dropna().empty else None
         active_params = group['active_params'].dropna().iloc[0] if not group['active_params'].dropna().empty else None
         
-        # Filtrer les lignes valides pour calculer le kwh/token (> 0 token et kwh non nul)
         valid_kwh_group = group[(group['tokens'] > 0) & (group['kwh'].notna())]
         
         if not valid_kwh_group.empty:
-            # Comme la formule dans le code source utilise une constante, 
-            # prendre le ratio d'une seule ligne valide suffit
-            kwh_per_token = valid_kwh_group['kwh'].iloc[0] / valid_kwh_group['tokens'].iloc[0] * 1000000
+            total_kwh = valid_kwh_group['kwh'].sum()
+            total_tokens = valid_kwh_group['tokens'].sum()
+            kwh_per_token = (total_kwh / total_tokens) * 1000000
         else:
             kwh_per_token = None
 

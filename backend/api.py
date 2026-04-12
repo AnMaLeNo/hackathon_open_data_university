@@ -52,13 +52,15 @@ app = FastAPI(
 # Définit la structure exacte attendue en entrée (le JSON que le front-end enverra)
 class PromptRequest(BaseModel):
     prompt: str
-    limit: int = 1000 # On met la même limite par défaut que dans ton main.py
+    limit: int = 1000 
+    score_threshold: float = 0.65
 
 class RoutageRequest(BaseModel):
     prompt: str
     # Matrice AHP 3x3 par défaut (Sémantique, Énergie, Souveraineté)
     matrice_ahp: List[List[float]] 
     limit: int = 1000
+    score_threshold: float = 0.65
 
 # --- Endpoints ---
 @app.post("/api/evaluer_prompt")
@@ -78,7 +80,8 @@ async def evaluer_prompt(request: PromptRequest):
             client=client,
             vecteur_requete=vecteur,
             collection_name="index_reactions_question_content",
-            limit=request.limit
+            limit=request.limit,
+            score_threshold=request.score_threshold
         )
 
         # 3. Analyse Sémantique
@@ -119,7 +122,8 @@ async def obtenir_meilleur_modele(request: RoutageRequest):
             client=client,
             vecteur_requete=vecteur,
             collection_name="index_reactions_question_content", # ou _comment selon ton choix
-            limit=request.limit
+            limit=request.limit,
+            score_threshold=request.score_threshold
         )
 
         if not resultats:

@@ -5,6 +5,12 @@ import pandas as pd
 from qdrant_client.http import models
 import numpy as np
 
+def safe_bool(val):
+    if pd.isna(val): return None
+    if isinstance(val, bool): return val
+    if isinstance(val, (int, float)): return bool(int(val))
+    if isinstance(val, str): return val.lower() in ('true', '1', 'yes')
+    return None
 
 
 def indexer_corpus(client, collection_name="index_reactions", vector_size=768):
@@ -64,17 +70,17 @@ def indexer_corpus(client, collection_name="index_reactions", vector_size=768):
                     "refers_to_model": str(row.refers_to_model) if pd.notna(row.refers_to_model) else "",
                     "model_pos": str(row.model_pos) if pd.notna(row.model_pos) else "",
                     
-                    # Casting booléen strict avec pd.notna() pour éviter bool(np.nan) == True
-                    "liked": bool(row.liked) if pd.notna(row.liked) else None,
-                    "disliked": bool(row.disliked) if pd.notna(row.disliked) else None,
+                    # Casting booléen strict
+                    "liked": safe_bool(row.liked),
+                    "disliked": safe_bool(row.disliked),
                     "comment": str(row.comment) if pd.notna(row.comment) else "",
                     
-                    "useful": bool(row.useful) if pd.notna(row.useful) else None,
-                    "creative": bool(row.creative) if pd.notna(row.creative) else None,
-                    "clear_formatting": bool(row.clear_formatting) if pd.notna(row.clear_formatting) else None,
-                    "superficial": bool(row.superficial) if pd.notna(row.superficial) else None,
-                    "instructions_not_followed": bool(row.instructions_not_followed) if pd.notna(row.instructions_not_followed) else None,
-                    "incorrect": bool(row.incorrect) if pd.notna(row.incorrect) else None
+                    "useful": safe_bool(row.useful),
+                    "creative": safe_bool(row.creative),
+                    "clear_formatting": safe_bool(row.clear_formatting),
+                    "superficial": safe_bool(row.superficial),
+                    "instructions_not_followed": safe_bool(row.instructions_not_followed),
+                    "incorrect": safe_bool(row.incorrect)
                 }
             )
         )
@@ -167,7 +173,9 @@ def indexer_corpus_generique(
             val = getattr(row, col)
             if pd.notna(val):
                 # Conversion explicite des types NumPy/Pandas pour la sérialisation JSON
-                if isinstance(val, (np.bool_, bool)):
+                if isinstance(val, str) and val.lower() in ('true', 'false'):
+                    payload_data[col] = (val.lower() == 'true')
+                elif isinstance(val, (np.bool_, bool)):
                     payload_data[col] = bool(val)
                 elif isinstance(val, (np.integer, int)):
                     payload_data[col] = int(val)
@@ -212,7 +220,7 @@ def rechercher_reactions_similaires(
     vecteur_requete: list[float],
     collection_name: str = "index_reactions",
     strict_constraints: dict = None,
-    limit: int = 100,
+    limit: int = 1000,
     score_threshold: float = 0.65
 ) -> list[dict]:
     """
