@@ -94,7 +94,9 @@ def analyser_meilleure_ia(reactions_similaires: list[dict]) -> dict:
 def modeliser_recompense_semantique(
     voisinage_k: List[Dict[str, Any]],
     vecteur_theta: Dict[str, float] = None,
-    vecteur_lambda: Dict[str, float] = None
+    vecteur_lambda: Dict[str, float] = None,
+    alpha: float = 1.0,
+    prior_mu: float = 0.0
 ) -> Dict[str, Dict[str, Union[float, int]]]:
     """
     Calcule la fonction de récompense sémantique, génère le score prédictif S_hat_m,
@@ -161,21 +163,20 @@ def modeliser_recompense_semantique(
         donnees_agregation_m[modele_m]["denominateur_somme_poids"] += similarite_wi
         donnees_agregation_m[modele_m]["volume_support"] += 1
 
-    # 4. Inférence probabiliste finale et structuration de la sortie
+    # 4. Inférence probabiliste finale avec lissage bayésien
     resultats_analytiques = {}
     
     for modele_m, metriques in donnees_agregation_m.items():
-        if metriques["denominateur_somme_poids"] > 0:
-            score_hat_s = metriques["numerateur_somme_ponderee"] / metriques["denominateur_somme_poids"]
-            resultats_analytiques[modele_m] = {
-                "score_semantique": round(score_hat_s, 4),
-                "volume_support": metriques["volume_support"]
-            }
-        else:
-            resultats_analytiques[modele_m] = {
-                "score_semantique": 0.0,
-                "volume_support": 0
-            }
+        # Lissage bayésien : ajout du prior et poids de régularisation
+        numerateur_reg = metriques["numerateur_somme_ponderee"] + alpha * prior_mu
+        denominateur_reg = metriques["denominateur_somme_poids"] + alpha
+        
+        score_hat_s = numerateur_reg / denominateur_reg
+        
+        resultats_analytiques[modele_m] = {
+            "score_semantique": round(score_hat_s, 4),
+            "volume_support": metriques["volume_support"]
+        }
 
     return resultats_analytiques
 
@@ -193,12 +194,24 @@ def deriver_poids_ahp(matrice_comparaison: np.ndarray) -> np.ndarray:
     Returns:
         Vecteur propre principal normalisé (somme = 1).
     """
+    n = matrice_comparaison.shape[0]
+    
     # Calcul du spectre de la matrice (valeurs propres et vecteurs propres)
     valeurs_propres, vecteurs_propres = np.linalg.eig(matrice_comparaison)
     
     # Isolation de la valeur propre maximale réelle
     index_max = np.argmax(np.real(valeurs_propres))
+    lambda_max = np.real(valeurs_propres[index_max])
     vecteur_propre_principal = np.real(vecteurs_propres[:, index_max])
+    
+    # Validation du Ratio de Cohérence (Consistency Ratio)
+    if n >= 3:
+        ci = (lambda_max - n) / (n - 1)
+        ri_dict = {3: 0.58, 4: 0.90, 5: 1.12, 6: 1.24, 7: 1.32, 8: 1.41, 9: 1.45, 10: 1.49}
+        ri = ri_dict.get(n, 1.49) # Approximation pour les n >= 10
+        cr = ci / ri
+        if cr > 0.10:
+            raise ValueError(f"La matrice AHP est incohérente (CR = {cr:.4f} > 0.10)")
     
     # Normalisation L1 du vecteur
     vecteur_poids_w = vecteur_propre_principal / np.sum(vecteur_propre_principal)
@@ -249,11 +262,18 @@ def optimiser_routage_topsis(
             valeur = dictionnaire_fusionne.get(critere)
             matrice_X[i, j] = float(valeur) if valeur is not None else 0.0
 
-    # 3. Étape B : Normalisation vectorielle (r_ij)
-    normes_euclidiennes = np.linalg.norm(matrice_X, axis=0)
-    # Prévention de la division par zéro par l'injection d'epsilon
-    normes_euclidiennes[normes_euclidiennes == 0] = np.finfo(float).eps 
-    matrice_R = matrice_X / normes_euclidiennes
+    # 3. Étape B : Normalisation Min-Max (r_ij)
+    matrice_R = np.zeros_like(matrice_X)
+    for j in range(nombre_criteres):
+        colonne = matrice_X[:, j]
+        min_val = np.min(colonne)
+        max_val = np.max(colonne)
+        
+        # Translation dans [0, 1] et prévention de la division par zéro
+        if np.abs(max_val - min_val) < np.finfo(float).eps:
+            matrice_R[:, j] = 1.0 if max_val > 0 else 0.0
+        else:
+            matrice_R[:, j] = (colonne - min_val) / (max_val - min_val)
 
     # 4. Étape C : Application des poids AHP (v_ij = W_j * r_ij)
     vecteur_poids_W = deriver_poids_ahp(matrice_ahp)

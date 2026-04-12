@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Send, Activity, AlertCircle, Target, Cpu, Leaf, Flag, Sliders, LayoutGrid, Award, List, Zap } from 'lucide-react';
+import { Send, Activity, AlertCircle, Cpu, Leaf, Flag, Sliders, LayoutGrid, Award, List, Zap } from 'lucide-react';
 import './index.css';
 
 interface ApiResponse {
@@ -13,18 +13,18 @@ interface ApiResponse {
 
 const AHP_PROFILES = {
   precision: [
-    [1.0, 9.0, 9.0], 
-    [0.11, 1.0, 1.0], 
+    [1.0, 9.0, 9.0],
+    [0.11, 1.0, 1.0],
     [0.11, 1.0, 1.0]
   ],
   green: [
-    [1.0, 0.11, 1.0], 
-    [9.0, 1.0, 9.0], 
+    [1.0, 0.11, 1.0],
+    [9.0, 1.0, 9.0],
     [1.0, 0.11, 1.0]
   ],
   sovereignty: [
-    [1.0, 1.0, 0.11], 
-    [1.0, 1.0, 0.11], 
+    [1.0, 1.0, 0.11],
+    [1.0, 1.0, 0.11],
     [9.0, 9.0, 1.0]
   ]
 };
@@ -44,9 +44,9 @@ function App() {
 
   const calculateAHPMatrix = (sem: number, eco: number, sov: number) => {
     return [
-      [1.0, sem/eco, sem/sov],
-      [eco/sem, 1.0, eco/sov],
-      [sov/sem, sov/eco, 1.0]
+      [1.0, sem / eco, sem / sov],
+      [eco / sem, 1.0, eco / sov],
+      [sov / sem, sov / eco, 1.0]
     ];
   };
 
@@ -64,7 +64,7 @@ function App() {
 
     try {
       const apiBaseUrl = import.meta.env.DEV ? 'http://localhost:8000' : '';
-      
+
       let endpoint = '';
       let body: any = { prompt, limit: 1000 };
 
@@ -72,11 +72,11 @@ function App() {
         endpoint = '/api/evaluer_prompt';
       } else {
         endpoint = '/api/meilleur_modele';
-        body.matrice_ahp = topsisInputMode === 'cards' 
+        body.matrice_ahp = topsisInputMode === 'cards'
           ? AHP_PROFILES[selectedProfile]
           : calculateAHPMatrix(sliderValues.semantic, sliderValues.eco, sliderValues.sovereignty);
       }
-      
+
       const response = await fetch(`${apiBaseUrl}${endpoint}`, {
         method: 'POST',
         headers: {
@@ -99,17 +99,6 @@ function App() {
     }
   };
 
-  const renderRecompenseValue = (value: any) => {
-    if (typeof value === 'number') {
-      const formattedValue = value.toFixed(4);
-      let scoreClass = 'score-medium';
-      if (value > 0.7) scoreClass = 'score-high';
-      else if (value < 0.3) scoreClass = 'score-low';
-
-      return <span className={`metric-value ${scoreClass}`}>{formattedValue}</span>;
-    }
-    return <span className="metric-value">{String(value)}</span>;
-  }
 
   return (
     <div className="app-container">
@@ -119,17 +108,17 @@ function App() {
       </div>
 
       <div className="glass-panel">
-        
+
         {/* Toggle Mode: Classique vs TOPSIS */}
         <div className="mode-tabs">
-          <button 
+          <button
             type="button"
             className={`tab-btn ${routingMode === 'topsis' ? 'active' : ''}`}
             onClick={() => { setRoutingMode('topsis'); setResult(null); }}
           >
             <Zap size={18} /> Routeur TOPSIS
           </button>
-          <button 
+          <button
             type="button"
             className={`tab-btn ${routingMode === 'classic' ? 'active' : ''}`}
             onClick={() => { setRoutingMode('classic'); setResult(null); }}
@@ -144,14 +133,14 @@ function App() {
           {routingMode === 'topsis' && (
             <div className="topsis-config-panel">
               <div className="sub-mode-tabs">
-                <button 
+                <button
                   type="button"
                   className={`sub-tab-btn ${topsisInputMode === 'cards' ? 'active' : ''}`}
                   onClick={() => setTopsisInputMode('cards')}
                 >
                   <LayoutGrid size={16} /> Profils Rapides
                 </button>
-                <button 
+                <button
                   type="button"
                   className={`sub-tab-btn ${topsisInputMode === 'sliders' ? 'active' : ''}`}
                   onClick={() => setTopsisInputMode('sliders')}
@@ -162,7 +151,7 @@ function App() {
 
               {topsisInputMode === 'cards' ? (
                 <div className="profile-cards">
-                  <div 
+                  <div
                     className={`profile-card ${selectedProfile === 'precision' ? 'active' : ''}`}
                     onClick={() => setSelectedProfile('precision')}
                   >
@@ -170,7 +159,7 @@ function App() {
                     <h3>Précision Max</h3>
                     <p>La meilleure réponse possible, sans compromis.</p>
                   </div>
-                  <div 
+                  <div
                     className={`profile-card green ${selectedProfile === 'green' ? 'active' : ''}`}
                     onClick={() => setSelectedProfile('green')}
                   >
@@ -178,7 +167,7 @@ function App() {
                     <h3>Éco. & Green IT</h3>
                     <p>Faible empreinte carbone, priorité aux petits modèles.</p>
                   </div>
-                  <div 
+                  <div
                     className={`profile-card red ${selectedProfile === 'sovereignty' ? 'active' : ''}`}
                     onClick={() => setSelectedProfile('sovereignty')}
                   >
@@ -191,37 +180,37 @@ function App() {
                 <div className="sliders-container">
                   <div className="slider-group">
                     <div className="slider-header">
-                      <span className="slider-label" style={{color: '#38bdf8'}}><Cpu size={16}/> Compétence Sémantique</span>
+                      <span className="slider-label" style={{ color: '#38bdf8' }}><Cpu size={16} /> Compétence Sémantique</span>
                       <span className="slider-value">{sliderValues.semantic}/10</span>
                     </div>
-                    <input 
-                      type="range" min="1" max="10" 
-                      value={sliderValues.semantic} 
-                      onChange={(e) => handleSliderChange(e, 'semantic')} 
+                    <input
+                      type="range" min="1" max="10"
+                      value={sliderValues.semantic}
+                      onChange={(e) => handleSliderChange(e, 'semantic')}
                       className="slider-input blue-slider"
                     />
                   </div>
                   <div className="slider-group">
                     <div className="slider-header">
-                      <span className="slider-label" style={{color: '#10b981'}}><Leaf size={16}/> Économie d'Énergie</span>
+                      <span className="slider-label" style={{ color: '#10b981' }}><Leaf size={16} /> Économie d'Énergie</span>
                       <span className="slider-value">{sliderValues.eco}/10</span>
                     </div>
-                    <input 
-                      type="range" min="1" max="10" 
-                      value={sliderValues.eco} 
-                      onChange={(e) => handleSliderChange(e, 'eco')} 
+                    <input
+                      type="range" min="1" max="10"
+                      value={sliderValues.eco}
+                      onChange={(e) => handleSliderChange(e, 'eco')}
                       className="slider-input green-slider"
                     />
                   </div>
                   <div className="slider-group">
                     <div className="slider-header">
-                      <span className="slider-label" style={{color: '#ef4444'}}><Flag size={16}/> Souveraineté Politique</span>
+                      <span className="slider-label" style={{ color: '#ef4444' }}><Flag size={16} /> Souveraineté Politique</span>
                       <span className="slider-value">{sliderValues.sovereignty}/10</span>
                     </div>
-                    <input 
-                      type="range" min="1" max="10" 
-                      value={sliderValues.sovereignty} 
-                      onChange={(e) => handleSliderChange(e, 'sovereignty')} 
+                    <input
+                      type="range" min="1" max="10"
+                      value={sliderValues.sovereignty}
+                      onChange={(e) => handleSliderChange(e, 'sovereignty')}
                       className="slider-input red-slider"
                     />
                   </div>
@@ -238,13 +227,13 @@ function App() {
               disabled={loading}
               spellCheck="false"
             />
-            <button 
-              type="submit" 
-              className="submit-btn" 
+            <button
+              type="submit"
+              className="submit-btn"
               disabled={loading || !prompt.trim()}
             >
-              {loading 
-                ? (routingMode === 'topsis' ? 'Calcul TOPSIS...' : 'Analyse en cours...') 
+              {loading
+                ? (routingMode === 'topsis' ? 'Calcul TOPSIS...' : 'Analyse en cours...')
                 : (routingMode === 'topsis' ? 'Trouver le Meilleur Modèle' : 'Évaluer Sémantiquement')}
               <Send size={16} />
             </button>
@@ -263,7 +252,7 @@ function App() {
             <div className="pulse-bubble"></div>
             <div className="pulse-bubble"></div>
             <div className="pulse-bubble"></div>
-            <div className="loader-text" style={{marginLeft: '20px', color: 'var(--text-secondary)', fontWeight: 600}}>
+            <div className="loader-text" style={{ marginLeft: '20px', color: 'var(--text-secondary)', fontWeight: 600 }}>
               {routingMode === 'topsis' ? 'Calcul du routage TOPSIS...' : 'Analyse sémantique en cours...'}
             </div>
           </div>
@@ -274,21 +263,38 @@ function App() {
           <div className="results-container">
             <div className="results-header">
               <Activity size={24} color="#38bdf8" />
-              <h2>Indicateurs & Récompenses Estimés</h2>
+              <h2>Classement de l'Analyse Sémantique</h2>
             </div>
-            <div className="metrics-grid" style={{marginBottom: '20px'}}>
-              {Object.entries(result.recompenses).map(([key, value]) => {
-                if (typeof value === 'object' && value !== null) return null;
-                return (
-                  <div key={key} className="metric-card">
-                    <div className="metric-title">
-                      <Target size={16} />
-                      {key.replace(/_/g, ' ')}
-                    </div>
-                    {renderRecompenseValue(value)}
-                  </div>
-                );
-              })}
+
+            <div className="ranking-section">
+              <div className="ranking-list">
+                {Object.entries(result.recompenses)
+                  // Application de la fonction de tri (décroissant) sur le scalaire score_semantique
+                  .sort((a, b) => {
+                    const scoreA = (a[1] as any).score_semantique || 0;
+                    const scoreB = (b[1] as any).score_semantique || 0;
+                    return scoreB - scoreA;
+                  })
+                  .map(([modele, metriques], index) => {
+                    const score = (metriques as any).score_semantique;
+                    const volume = (metriques as any).volume_support;
+
+                    return (
+                      <div key={modele} className={`ranking-item ${index === 0 ? 'top-1' : ''}`}>
+                        <div className="rank">#{index + 1}</div>
+                        <div className="model-name" style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span>{modele}</span>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 'normal', marginTop: '4px' }}>
+                            Volume de support : {volume} évaluation{volume > 1 ? 's' : ''}
+                          </span>
+                        </div>
+                        <div className={`model-score ${score > 0.7 ? 'score-high' : score < 0.3 ? 'score-low' : 'score-medium'}`}>
+                          {typeof score === 'number' ? score.toFixed(4) : score}
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
           </div>
         )}
@@ -308,8 +314,8 @@ function App() {
             </div>
 
             {result.classement_complet && (
-              <div className="ranking-section" style={{marginTop: '25px'}}>
-                <h3 className="metric-title" style={{marginBottom: '15px'}}><List size={16} /> Tableau de Classement Complet</h3>
+              <div className="ranking-section" style={{ marginTop: '25px' }}>
+                <h3 className="metric-title" style={{ marginBottom: '15px' }}><List size={16} /> Tableau de Classement Complet</h3>
                 <div className="ranking-list">
                   {result.classement_complet.map((item, index) => (
                     <div key={item[0]} className={`ranking-item ${index === 0 ? 'top-1' : ''}`}>
