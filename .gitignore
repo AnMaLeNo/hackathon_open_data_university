@@ -1,6 +1,7 @@
-database/
 base_vectorielle/
 backup/
 qdrant_storage/
 venv/
 __pycache__/
+test_docker/
+*.parquet
