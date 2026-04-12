@@ -1,12 +1,42 @@
 import pandas as pd
 import json
 import math
-import pandas as pd
+
+def get_souverainete_score(model_name: str) -> float:
+    """
+    Analyse le nom du modèle et retourne un score de souveraineté.
+    1.0 pour les modèles français/européens, 0.0 pour les autres.
+    """
+    if not model_name:
+        return 0.0
+        
+    name_lower = str(model_name).lower()
+    
+    # Mots-clés basés sur les modèles identifiés dans ton dataset
+    mots_cles_souverains = [
+        "mistral",     # Famille Mistral
+        "mixtral",     # Mistral MoE
+        "ministral",   # Petits modèles Mistral
+        "chocolatine", # Modèle français
+        "eurollm",     # Initiative européenne
+        "apertus",     # Initiative open-source française
+        "magistral"    # Semble être une déclinaison/finetune francophone
+    ]
+    
+    # Si un des mots-clés est dans le nom du modèle, c'est un modèle souverain
+    for mot in mots_cles_souverains:
+        if mot in name_lower:
+            return 1.0
+            
+    # Sinon, on considère que c'est un modèle étranger (US, Chinois, etc.)
+    return 0.0
+
 
 def extract_model_stats_to_json(df):
     """
     Extrait les statistiques des modèles d'un DataFrame de conversations
-    et retourne un JSON structuré avec les paramètres et le ratio kWh/token.
+    et retourne un JSON structuré avec les paramètres, le ratio kWh/token,
+    et le score de souveraineté calculé automatiquement.
     """
     # 1. Isoler les données du modèle A et les renommer avec des noms génériques
     df_a = df[[
@@ -28,12 +58,9 @@ def extract_model_stats_to_json(df):
     # Supprimer les lignes où le nom du modèle est vide (au cas où)
     df_combined = df_combined.dropna(subset=['model_name'])
 
-    # 4. Calculer le kwh/token (seulement là où on a des tokens pour éviter les divisions par zéro)
-    # Le ratio est constant pour un modèle donné, on le calcule sur la volée.
-    
     result_dict = {}
 
-    # 5. Grouper par nom de modèle pour récupérer les infos uniques
+    # 4. Grouper par nom de modèle pour récupérer les infos uniques
     for model_name, group in df_combined.groupby('model_name'):
         
         # Récupérer les paramètres (on prend la première valeur non-nulle trouvée)
@@ -50,24 +77,16 @@ def extract_model_stats_to_json(df):
         else:
             kwh_per_token = None
 
-        # Nettoyage pour le JSON (convertir les float/int numpy en types natifs Python)
+        # 5. Nettoyage pour le JSON et AJOUT DU SCORE DE SOUVERAINETÉ
         result_dict[str(model_name)] = {
             "total_params": float(total_params) if total_params and not math.isnan(total_params) else None,
             "active_params": float(active_params) if active_params and not math.isnan(active_params) else None,
-            "kwh/token": float(kwh_per_token) if kwh_per_token and not math.isnan(kwh_per_token) else None
+            "kwh/token": float(kwh_per_token) if kwh_per_token and not math.isnan(kwh_per_token) else None,
+            "score_souverainete": get_souverainete_score(str(model_name))
         }
 
     # 6. Convertir le dictionnaire en chaîne JSON formatée
     return json.dumps(result_dict, indent=4)
-
-
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
     # 1. Charger le fichier parquet
@@ -76,5 +95,9 @@ if __name__ == "__main__":
     # 2. Appliquer la fonction
     json_result = extract_model_stats_to_json(df)
 
-    # 3. Afficher le résultat
+    # 3. Afficher le résultat (ou le sauvegarder)
     print(json_result)
+    
+    # Décommenter les lignes ci-dessous pour sauvegarder directement le fichier
+    # with open("metriques_physiques.json", "w", encoding="utf-8") as f:
+    #     f.write(json_result)
