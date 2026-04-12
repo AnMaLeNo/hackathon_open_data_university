@@ -246,7 +246,8 @@ def optimiser_routage_topsis(
         # Agrégation dynamique selon l'ordre strict de noms_criteres
         dictionnaire_fusionne = {**donnees_semantiques, **donnees_physiques}
         for j, critere in enumerate(noms_criteres):
-            matrice_X[i, j] = dictionnaire_fusionne.get(critere, 0.0)
+            valeur = dictionnaire_fusionne.get(critere)
+            matrice_X[i, j] = float(valeur) if valeur is not None else 0.0
 
     # 3. Étape B : Normalisation vectorielle (r_ij)
     normes_euclidiennes = np.linalg.norm(matrice_X, axis=0)
