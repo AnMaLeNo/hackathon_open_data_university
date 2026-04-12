@@ -7,16 +7,16 @@ type Rating = { label: string; color: string; bgColor: string };
 
 /** TOPSIS : score entre 0 et 1 */
 function getTopsisRating(score: number): Rating {
-  if (score >= 0.55) return { label: 'Bon',     color: '#22c55e', bgColor: 'rgba(34,197,94,0.15)'   };
-  if (score >= 0.35) return { label: 'Neutre',  color: '#9ca3af', bgColor: 'rgba(156,163,175,0.15)' };
-  return                    { label: 'Mauvais', color: '#ef4444', bgColor: 'rgba(239,68,68,0.15)'   };
+  if (score >= 0.55) return { label: 'Bon', color: '#22c55e', bgColor: 'rgba(34,197,94,0.15)' };
+  if (score >= 0.35) return { label: 'Neutre', color: '#9ca3af', bgColor: 'rgba(156,163,175,0.15)' };
+  return { label: 'Mauvais', color: '#ef4444', bgColor: 'rgba(239,68,68,0.15)' };
 }
 
 /** Analyse sémantique : score entre -1 et 1.5 */
 function getSemanticRating(score: number): Rating {
-  if (score >= 0.4)  return { label: 'Bon',     color: '#22c55e', bgColor: 'rgba(34,197,94,0.15)'   };
-  if (score >= -0.1) return { label: 'Neutre',  color: '#9ca3af', bgColor: 'rgba(156,163,175,0.15)' };
-  return                    { label: 'Mauvais', color: '#ef4444', bgColor: 'rgba(239,68,68,0.15)'   };
+  if (score >= 0.4) return { label: 'Bon', color: '#22c55e', bgColor: 'rgba(34,197,94,0.15)' };
+  if (score >= -0.1) return { label: 'Neutre', color: '#9ca3af', bgColor: 'rgba(156,163,175,0.15)' };
+  return { label: 'Mauvais', color: '#ef4444', bgColor: 'rgba(239,68,68,0.15)' };
 }
 import './index.css';
 
@@ -133,8 +133,8 @@ function App() {
   return (
     <div className="app-container">
       <div className="title-container">
-        <h1 className="main-title">AI Engine</h1>
-        <p className="subtitle">L'IA pour évaluer et optimiser le routage sémantique de vos prompts</p>
+        <h1 className="main-title">MatchLLM</h1>
+        <p className="subtitle">Match ton prompt avec l'IA qui lui correspond</p>
       </div>
 
       <div className="glass-panel">
@@ -146,14 +146,14 @@ function App() {
             className={`tab-btn ${routingMode === 'topsis' ? 'active' : ''}`}
             onClick={() => { setRoutingMode('topsis'); setResult(null); }}
           >
-            <Zap size={18} /> Routeur TOPSIS
+            <Zap size={18} /> Analyse par Compromis
           </button>
           <button
             type="button"
             className={`tab-btn ${routingMode === 'classic' ? 'active' : ''}`}
             onClick={() => { setRoutingMode('classic'); setResult(null); }}
           >
-            <Activity size={18} /> Analyse Spécifique
+            <Activity size={18} /> Analyse Clasique
           </button>
         </div>
 
@@ -175,7 +175,7 @@ function App() {
                   className={`sub-tab-btn ${topsisInputMode === 'sliders' ? 'active' : ''}`}
                   onClick={() => setTopsisInputMode('sliders')}
                 >
-                  <Sliders size={16} /> Job Crafting
+                  <Sliders size={16} /> Mode Avancé
                 </button>
               </div>
 
