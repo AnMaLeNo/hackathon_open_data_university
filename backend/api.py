@@ -11,10 +11,45 @@ import numpy as np
 from qdrant_tools import rechercher_reactions_similaires
 from analyse import modeliser_recompense_semantique, optimiser_routage_topsis
 
+from qdrant_tools import rechercher_reactions_similaires, indexer_corpus_generique
+from qdrant_client.models import Distance
+
+
 # --- Variables Globales ---
 ml_models = {}
 qdrant_db = {}
 app_data = {}
+
+def index_corpus(client, dim_vecteur):
+    colonnes_payload_cibles = [
+        "question_content", 
+        "conversation_pair_id", 
+        "refers_to_model", 
+        "model_pos",
+        "liked", 
+        "disliked", 
+        "comment", 
+        "useful", 
+        "creative", 
+        "clear_formatting", 
+        "superficial", 
+        "instructions_not_followed", 
+        "incorrect"
+    ]
+    indexer_corpus_generique(
+        client=client, # Instance pré-existante du client Qdrant
+        vector_file_path="./base_vectorielle/base_vectorielle_reactions_question_content.parquet",
+        metadata_file_path="./database/reactions.parquet",
+        collection_name="index_reactions_question_content",
+        vector_size=dim_vecteur,
+        vector_column="embedding", # Paramètre par défaut, rendu explicite ici
+        join_key="id",             # Paramètre par défaut, rendu explicite ici
+        payload_columns=colonnes_payload_cibles,
+        index_fields=["conversation_pair_id"],
+        batch_size=1000,           # Correspond au seuil de bufferisation initial
+        distance_metric=Distance.COSINE
+    )
+
 
 # --- Gestion de la durée de vie (Lifespan) ---
 # C'est la méthode moderne de FastAPI pour charger les modèles lourds au démarrage
@@ -27,6 +62,7 @@ async def lifespan(app: FastAPI):
     qdrant_url = os.getenv("QDRANT_URL", "http://localhost:6333")
     print(f"⏳ Démarrage du serveur : Connexion à Qdrant sur {qdrant_url}...")
     qdrant_db["client"] = QdrantClient(url=qdrant_url)
+    index_corpus(qdrant_db["client"], dim_vecteur=1024)
     
     print("⏳ Démarrage du serveur : Chargement des métriques physiques...")
     with open('metriques_physiques.json', 'r', encoding='utf-8') as fichier:

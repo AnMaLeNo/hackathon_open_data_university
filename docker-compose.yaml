@@ -18,6 +18,7 @@ services:
       # Montage des données utiles pour permettre la ré-indexation sans rebuild
       - ./database:/app/database
       - ./base_vectorielle:/app/base_vectorielle
+      - ./database:/app/database
 
   frontend:
     build:
