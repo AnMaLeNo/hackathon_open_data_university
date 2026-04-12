@@ -164,6 +164,49 @@ textarea::placeholder {
 .results-header h2 {
   font-size: 1.5rem;
   font-weight: 600;
+  flex: 1;
+}
+
+.matched-q-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(167, 139, 250, 0.08);
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  color: var(--text-secondary);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.matched-q-toggle:hover {
+  background: rgba(167, 139, 250, 0.15);
+  border-color: rgba(167, 139, 250, 0.5);
+  color: #a78bfa;
+}
+
+.matched-q-toggle.active {
+  background: rgba(167, 139, 250, 0.2);
+  border-color: #a78bfa;
+  color: #a78bfa;
+}
+
+.matched-q-hint {
+  margin: 0 0 16px 0;
+  padding: 10px 14px;
+  background: rgba(167, 139, 250, 0.07);
+  border-left: 3px solid rgba(167, 139, 250, 0.5);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.5;
+  animation: slideUp 0.25s ease forwards;
 }
 
 .metrics-grid {

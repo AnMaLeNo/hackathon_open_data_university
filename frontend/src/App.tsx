@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Send, Activity, AlertCircle, Cpu, Leaf, Flag, Sliders, LayoutGrid, Award, List, Zap } from 'lucide-react';
+import { Send, Activity, AlertCircle, Cpu, Leaf, Flag, Sliders, LayoutGrid, Award, List, Zap, Eye, EyeOff } from 'lucide-react';
 
 // --- Helpers : conversion score → étiquette lisible ---
 
@@ -58,6 +58,7 @@ function App() {
   const [routingMode, setRoutingMode] = useState<'classic' | 'topsis'>('topsis');
   const [topsisInputMode, setTopsisInputMode] = useState<'cards' | 'sliders'>('cards');
   const [selectedProfile, setSelectedProfile] = useState<'precision' | 'green' | 'sovereignty'>('precision');
+  const [showMatchedQuestions, setShowMatchedQuestions] = useState(true);
   // Les sliders vont de 1 à 10
   const [sliderValues, setSliderValues] = useState({ semantic: 5, eco: 5, sovereignty: 5 });
 
@@ -295,7 +296,21 @@ function App() {
             <div className="results-header">
               <Activity size={24} color="#38bdf8" />
               <h2>Classement de l'Analyse Sémantique</h2>
+              <button
+                type="button"
+                className={`matched-q-toggle ${showMatchedQuestions ? 'active' : ''}`}
+                onClick={() => setShowMatchedQuestions(v => !v)}
+                title="Les questions de notre base qui ont le mieux matché sémantiquement avec votre prompt"
+              >
+                {showMatchedQuestions ? <EyeOff size={14} /> : <Eye size={14} />}
+                {showMatchedQuestions ? 'Masquer les requêtes sources' : 'Voir les requêtes sources'}
+              </button>
             </div>
+            {showMatchedQuestions && (
+              <p className="matched-q-hint">
+                💡 Ces requêtes sont les questions de notre base de données dont le sens est le plus proche de votre prompt. Elles ont servi à calculer les scores ci-dessous.
+              </p>
+            )}
 
             <div className="ranking-section">
               <div className="ranking-list">
@@ -312,32 +327,32 @@ function App() {
 
                     return (
                       <div key={modele} className={`ranking-item ${index === 0 ? 'top-1' : ''}`}>
-                         <div className="rank">#{index + 1}</div>
-                         <div className="model-name" style={{ display: 'flex', flexDirection: 'column' }}>
-                           <span>{modele}</span>
-                           <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 'normal', marginTop: '4px' }}>
-                             Volume de support : {volume} évaluation{volume > 1 ? 's' : ''}
-                           </span>
-                           {result.questions_par_modele?.[modele] && result.questions_par_modele[modele].length > 0 && (
-                             <ul className="inline-matched-questions">
-                               {result.questions_par_modele[modele].map((entry, qi) => (
-                                 <li key={qi} className="inline-matched-question">
-                                   <span className="inline-q-index">{qi + 1}</span>
-                                   <span className="inline-q-text">
-                                     {entry.question}
-                                     <span className="inline-q-score">({entry.score.toFixed(3)})</span>
-                                   </span>
-                                 </li>
-                               ))}
-                             </ul>
-                           )}
-                         </div>
-                         <span style={{
-                           fontSize: '0.8rem', fontWeight: 700, padding: '3px 10px',
-                           borderRadius: '20px', color: getSemanticRating(score).color,
-                           background: getSemanticRating(score).bgColor, whiteSpace: 'nowrap'
-                         }}>{getSemanticRating(score).label}</span>
-                       </div>
+                        <div className="rank">#{index + 1}</div>
+                        <div className="model-name" style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span>{modele}</span>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 'normal', marginTop: '4px' }}>
+                            Volume de support : {volume} évaluation{volume > 1 ? 's' : ''}
+                          </span>
+                          {showMatchedQuestions && result.questions_par_modele?.[modele] && result.questions_par_modele[modele].length > 0 && (
+                            <ul className="inline-matched-questions">
+                              {result.questions_par_modele[modele].map((entry, qi) => (
+                                <li key={qi} className="inline-matched-question">
+                                  <span className="inline-q-index">{qi + 1}</span>
+                                  <span className="inline-q-text">
+                                    {entry.question}
+                                    <span className="inline-q-score">({entry.score.toFixed(3)})</span>
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                        <span style={{
+                          fontSize: '0.8rem', fontWeight: 700, padding: '3px 10px',
+                          borderRadius: '20px', color: getSemanticRating(score).color,
+                          background: getSemanticRating(score).bgColor, whiteSpace: 'nowrap'
+                        }}>{getSemanticRating(score).label}</span>
+                      </div>
                     );
                   })}
               </div>
@@ -369,14 +384,30 @@ function App() {
 
             {result.classement_complet && (
               <div className="ranking-section" style={{ marginTop: '25px' }}>
-                <h3 className="metric-title" style={{ marginBottom: '15px' }}><List size={16} /> Tableau de Classement Complet</h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px', flexWrap: 'wrap' }}>
+                  <h3 className="metric-title" style={{ margin: 0 }}><List size={16} /> Tableau de Classement Complet</h3>
+                  <button
+                    type="button"
+                    className={`matched-q-toggle ${showMatchedQuestions ? 'active' : ''}`}
+                    onClick={() => setShowMatchedQuestions(v => !v)}
+                    title="Les questions de notre base qui ont le mieux matché sémantiquement avec votre prompt"
+                  >
+                    {showMatchedQuestions ? <EyeOff size={14} /> : <Eye size={14} />}
+                    {showMatchedQuestions ? 'Masquer les requêtes sources' : 'Voir les requêtes sources'}
+                  </button>
+                </div>
+                {showMatchedQuestions && (
+                  <p className="matched-q-hint">
+                    💡 Ces requêtes sont les questions de notre base de données dont le sens est le plus proche de votre prompt. Elles ont servi à calculer les scores ci-dessous.
+                  </p>
+                )}
                 <div className="ranking-list">
                   {result.classement_complet.map((item, index) => (
                     <div key={item[0]} className={`ranking-item ${index === 0 ? 'top-1' : ''}`}>
                       <div className="rank">#{index + 1}</div>
                       <div className="model-name" style={{ display: 'flex', flexDirection: 'column' }}>
                         <span>{item[0]}</span>
-                        {result.questions_par_modele?.[item[0]] && result.questions_par_modele[item[0]].length > 0 && (
+                        {showMatchedQuestions && result.questions_par_modele?.[item[0]] && result.questions_par_modele[item[0]].length > 0 && (
                           <ul className="inline-matched-questions">
                             {result.questions_par_modele[item[0]].map((entry: { question: string; score: number }, qi: number) => (
                               <li key={qi} className="inline-matched-question">
