@@ -1,0 +1,577 @@
+{
+    "Apertus-70B-Instruct-2509": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": 0.6575289928335043
+    },
+    "Apertus-8B-Instruct-2509": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": 0.08915258455308872
+    },
+    "DeepSeek-V3.2": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": 3.9789008971844297
+    },
+    "EuroLLM-22B-Instruct-2512": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": 0.10613992795912139
+    },
+    "Qwen3-Coder-480B-A35B-Instruct": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": 1.9506222350927123
+    },
+    "Yi-1.5-9B-Chat": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": 0.0903659662249482
+    },
+    "aya-expanse-32b": {
+        "total_params": 32.0,
+        "active_params": 32.0,
+        "kwh/token": 0.1182737446777161
+    },
+    "aya-expanse-8b": {
+        "total_params": 8.0,
+        "active_params": 8.0,
+        "kwh/token": 0.08915258455308872
+    },
+    "c4ai-command-r-08-2024": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": null
+    },
+    "chocolatine-14b-instruct-dpo-v1.2-q4": {
+        "total_params": 14.0,
+        "active_params": 14.0,
+        "kwh/token": 0.09643287458424556
+    },
+    "chocolatine-2-14b-instruct-v2.0.3-q8": {
+        "total_params": 7.0,
+        "active_params": 7.0,
+        "kwh/token": 0.08793920288122925
+    },
+    "claude-3-5-sonnet": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": null
+    },
+    "claude-3-5-sonnet-v2": {
+        "total_params": 440.0,
+        "active_params": 137.0,
+        "kwh/token": 3.930861123567374
+    },
+    "claude-3-7-sonnet": {
+        "total_params": 440.0,
+        "active_params": 137.0,
+        "kwh/token": 3.930861123567373
+    },
+    "claude-3-haiku": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": null
+    },
+    "claude-4-5-sonnet": {
+        "total_params": 440.0,
+        "active_params": 137.0,
+        "kwh/token": 3.930861123567374
+    },
+    "claude-4-6-sonnet": {
+        "total_params": 440.0,
+        "active_params": 137.0,
+        "kwh/token": 3.930861123567374
+    },
+    "claude-4-sonnet": {
+        "total_params": 440.0,
+        "active_params": 137.0,
+        "kwh/token": 3.930861123567373
+    },
+    "command-a": {
+        "total_params": 111.0,
+        "active_params": 111.0,
+        "kwh/token": 0.8565235870184582
+    },
+    "deepseek-chat-v3.1": {
+        "total_params": 685.0,
+        "active_params": 37.0,
+        "kwh/token": 3.9789008971844297
+    },
+    "deepseek-r1": {
+        "total_params": 671.0,
+        "active_params": 37.0,
+        "kwh/token": 3.9789008971844306
+    },
+    "deepseek-r1-0528": {
+        "total_params": 685.0,
+        "active_params": 37.0,
+        "kwh/token": 3.9789008971844306
+    },
+    "deepseek-r1-distill-llama-70b": {
+        "total_params": 70.0,
+        "active_params": 70.0,
+        "kwh/token": 0.6575289928335044
+    },
+    "deepseek-v3-0324": {
+        "total_params": 685.0,
+        "active_params": 37.0,
+        "kwh/token": 3.9789008971844306
+    },
+    "deepseek-v3-chat": {
+        "total_params": 671.0,
+        "active_params": 37.0,
+        "kwh/token": 3.9789008971844306
+    },
+    "gemini-1.5-pro": {
+        "total_params": 600.0,
+        "active_params": 220.0,
+        "kwh/token": 11.084463967593509
+    },
+    "gemini-2.0-flash": {
+        "total_params": 440.0,
+        "active_params": 137.0,
+        "kwh/token": 3.930861123567374
+    },
+    "gemini-2.5-flash": {
+        "total_params": 440.0,
+        "active_params": 137.0,
+        "kwh/token": 3.930861123567373
+    },
+    "gemini-3-flash-preview": {
+        "total_params": 440.0,
+        "active_params": 137.0,
+        "kwh/token": 3.930861123567374
+    },
+    "gemini-3-pro-preview": {
+        "total_params": 750.0,
+        "active_params": 45.0,
+        "kwh/token": 4.289526605180456
+    },
+    "gemini-3.1-flash-lite-preview": {
+        "total_params": 250.0,
+        "active_params": 25.0,
+        "kwh/token": 0.8782405837975983
+    },
+    "gemini-3.1-pro-preview": {
+        "total_params": 750.0,
+        "active_params": 45.0,
+        "kwh/token": 4.289526605180457
+    },
+    "gemma-2-27b-it-q8": {
+        "total_params": 27.0,
+        "active_params": 27.0,
+        "kwh/token": 0.11220683631841874
+    },
+    "gemma-2-9b-it": {
+        "total_params": 9.0,
+        "active_params": 9.0,
+        "kwh/token": 0.0903659662249482
+    },
+    "gemma-3-12b": {
+        "total_params": 12.0,
+        "active_params": 12.0,
+        "kwh/token": 0.09400611124052663
+    },
+    "gemma-3-27b": {
+        "total_params": 27.0,
+        "active_params": 27.0,
+        "kwh/token": 0.11220683631841874
+    },
+    "gemma-3-4b": {
+        "total_params": 4.0,
+        "active_params": 4.0,
+        "kwh/token": 0.08429905786565083
+    },
+    "gemma-3n-e4b-it": {
+        "total_params": 8.0,
+        "active_params": 4.0,
+        "kwh/token": 0.08429905786565084
+    },
+    "gemma-4-31b-it": {
+        "total_params": 31.0,
+        "active_params": 31.0,
+        "kwh/token": 0.11706036300585664
+    },
+    "glm-4.5": {
+        "total_params": 355.0,
+        "active_params": 32.0,
+        "kwh/token": 1.8923799148434577
+    },
+    "glm-4.6": {
+        "total_params": 357.0,
+        "active_params": 32.0,
+        "kwh/token": 1.8923799148434577
+    },
+    "glm-4.7": {
+        "total_params": 357.0,
+        "active_params": 32.0,
+        "kwh/token": 1.892379914843458
+    },
+    "glm-5": {
+        "total_params": 744.0,
+        "active_params": 40.0,
+        "kwh/token": 4.095385537682941
+    },
+    "gpt-4.1-mini": {
+        "total_params": 75.0,
+        "active_params": 75.0,
+        "kwh/token": 0.6817966262706938
+    },
+    "gpt-4.1-nano": {
+        "total_params": 23.0,
+        "active_params": 23.0,
+        "kwh/token": 0.10735330963098086
+    },
+    "gpt-4o": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": null
+    },
+    "gpt-4o-2024-08-06": {
+        "total_params": 440.0,
+        "active_params": 137.0,
+        "kwh/token": 3.930861123567374
+    },
+    "gpt-4o-mini-2024-07-18": {
+        "total_params": 18.0,
+        "active_params": 18.0,
+        "kwh/token": 0.10128640127168345
+    },
+    "gpt-5": {
+        "total_params": 300.0,
+        "active_params": 94.0,
+        "kwh/token": 3.0960545333280565
+    },
+    "gpt-5-mini": {
+        "total_params": 47.0,
+        "active_params": 16.0,
+        "kwh/token": 0.19771927585592902
+    },
+    "gpt-5-nano": {
+        "total_params": 11.0,
+        "active_params": 4.0,
+        "kwh/token": 0.08429905786565085
+    },
+    "gpt-5.1": {
+        "total_params": 300.0,
+        "active_params": 94.0,
+        "kwh/token": 3.0960545333280565
+    },
+    "gpt-5.2": {
+        "total_params": 300.0,
+        "active_params": 94.0,
+        "kwh/token": 3.0960545333280565
+    },
+    "gpt-5.3": {
+        "total_params": 300.0,
+        "active_params": 94.0,
+        "kwh/token": 3.0960545333280565
+    },
+    "gpt-5.4": {
+        "total_params": 300.0,
+        "active_params": 94.0,
+        "kwh/token": 3.096054533328056
+    },
+    "gpt-5.4-mini": {
+        "total_params": 47.0,
+        "active_params": 16.0,
+        "kwh/token": 0.19771927585592902
+    },
+    "gpt-5.4-nano": {
+        "total_params": 11.0,
+        "active_params": 4.0,
+        "kwh/token": 0.08429905786565085
+    },
+    "gpt-oss-120b": {
+        "total_params": 117.0,
+        "active_params": 5.0,
+        "kwh/token": 0.34204975815004124
+    },
+    "gpt-oss-20b": {
+        "total_params": 21.0,
+        "active_params": 3.0,
+        "kwh/token": 0.08308567619379136
+    },
+    "grok-3-mini-beta": {
+        "total_params": 180.0,
+        "active_params": 22.0,
+        "kwh/token": 0.8491194236729712
+    },
+    "grok-4-fast": {
+        "total_params": 1700.0,
+        "active_params": 121.0,
+        "kwh/token": 14.480941662285394
+    },
+    "grok-4.1-fast": {
+        "total_params": 1700.0,
+        "active_params": 121.0,
+        "kwh/token": 14.480941662285396
+    },
+    "hermes-3-llama-3.1-405b": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": null
+    },
+    "hermes-4-70b": {
+        "total_params": 70.0,
+        "active_params": 70.0,
+        "kwh/token": 0.6575289928335044
+    },
+    "jamba-1.5-large": {
+        "total_params": 400.0,
+        "active_params": 94.0,
+        "kwh/token": 3.0960545333280565
+    },
+    "kimi-k2": {
+        "total_params": 1000.0,
+        "active_params": 32.0,
+        "kwh/token": 3.7847598296869154
+    },
+    "kimi-k2-thinking": {
+        "total_params": 1000.0,
+        "active_params": 32.0,
+        "kwh/token": 3.7847598296869154
+    },
+    "kimi-k2.5": {
+        "total_params": 1000.0,
+        "active_params": 32.0,
+        "kwh/token": 3.7847598296869154
+    },
+    "lfm-40b": {
+        "total_params": 40.0,
+        "active_params": 12.0,
+        "kwh/token": 0.18801222248105326
+    },
+    "lfm2-8b-a1b": {
+        "total_params": 8.0,
+        "active_params": 1.0,
+        "kwh/token": 0.08065891285007239
+    },
+    "llama-3.1-405b": {
+        "total_params": 405.0,
+        "active_params": 405.0,
+        "kwh/token": 9.1338417325008
+    },
+    "llama-3.1-70b": {
+        "total_params": 70.0,
+        "active_params": 70.0,
+        "kwh/token": 0.6575289928335044
+    },
+    "llama-3.1-8b": {
+        "total_params": 8.0,
+        "active_params": 8.0,
+        "kwh/token": 0.0891525845530887
+    },
+    "llama-3.1-nemotron-70b-instruct": {
+        "total_params": 70.0,
+        "active_params": 70.0,
+        "kwh/token": 0.6575289928335043
+    },
+    "llama-3.3-70b": {
+        "total_params": 70.0,
+        "active_params": 70.0,
+        "kwh/token": 0.6575289928335044
+    },
+    "llama-4-scout": {
+        "total_params": 109.0,
+        "active_params": 17.0,
+        "kwh/token": 0.4002920783992959
+    },
+    "llama-maverick": {
+        "total_params": 400.0,
+        "active_params": 17.0,
+        "kwh/token": 1.6011683135971837
+    },
+    "magistral-medium": {
+        "total_params": 123.0,
+        "active_params": 123.0,
+        "kwh/token": 0.9147659072677128
+    },
+    "magistral-small-2506": {
+        "total_params": 24.0,
+        "active_params": 24.0,
+        "kwh/token": 0.10856669130284032
+    },
+    "minimax-m2": {
+        "total_params": 230.0,
+        "active_params": 10.0,
+        "kwh/token": 0.7326347831744614
+    },
+    "minimax-m2.5": {
+        "total_params": 229.0,
+        "active_params": 10.0,
+        "kwh/token": 0.7326347831744614
+    },
+    "ministral-8b-instruct-2410": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": null
+    },
+    "mistral-large-2411": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": null
+    },
+    "mistral-large-2512": {
+        "total_params": 675.0,
+        "active_params": 41.0,
+        "kwh/token": 4.134213751182444
+    },
+    "mistral-medium-2508": {
+        "total_params": 123.0,
+        "active_params": 123.0,
+        "kwh/token": 0.9147659072677129
+    },
+    "mistral-medium-3.1": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": null
+    },
+    "mistral-nemo-2407": {
+        "total_params": 12.0,
+        "active_params": 12.0,
+        "kwh/token": 0.09400611124052663
+    },
+    "mistral-saba": {
+        "total_params": 24.0,
+        "active_params": 24.0,
+        "kwh/token": 0.10856669130284032
+    },
+    "mistral-small-24B-Instruct-2501": {
+        "total_params": 24.0,
+        "active_params": 24.0,
+        "kwh/token": null
+    },
+    "mistral-small-24b-instruct-2501": {
+        "total_params": 24.0,
+        "active_params": 24.0,
+        "kwh/token": 0.1085666913028403
+    },
+    "mistral-small-2506": {
+        "total_params": 24.0,
+        "active_params": 24.0,
+        "kwh/token": 0.1085666913028403
+    },
+    "mistral-small-2603": {
+        "total_params": 119.0,
+        "active_params": 6.0,
+        "kwh/token": 0.3469032848374791
+    },
+    "mistral-small-3.1-24b": {
+        "total_params": 24.0,
+        "active_params": 24.0,
+        "kwh/token": 0.1085666913028403
+    },
+    "mixtral-8x22b-instruct-v0.1": {
+        "total_params": 176.0,
+        "active_params": 44.0,
+        "kwh/token": 1.0626745979202383
+    },
+    "mixtral-8x7b-instruct-v0.1": {
+        "total_params": 56.0,
+        "active_params": 14.0,
+        "kwh/token": 0.1928657491684911
+    },
+    "nemotron-3-super-120b-a12b": {
+        "total_params": 120.0,
+        "active_params": 12.0,
+        "kwh/token": 0.3760244449621065
+    },
+    "none": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": null
+    },
+    "o3-mini": {
+        "total_params": 18.0,
+        "active_params": 18.0,
+        "kwh/token": 0.10128640127168345
+    },
+    "o4-mini": {
+        "total_params": 18.0,
+        "active_params": 18.0,
+        "kwh/token": 0.10128640127168347
+    },
+    "olmo-3-32b-think": {
+        "total_params": 32.0,
+        "active_params": 32.0,
+        "kwh/token": 0.1182737446777161
+    },
+    "phi-3.5-mini-instruct": {
+        "total_params": 3.0,
+        "active_params": 3.0,
+        "kwh/token": 0.08308567619379136
+    },
+    "phi-4": {
+        "total_params": 14.0,
+        "active_params": 14.0,
+        "kwh/token": 0.09643287458424557
+    },
+    "qwen-3-8b": {
+        "total_params": 8.0,
+        "active_params": 8.0,
+        "kwh/token": 0.0891525845530887
+    },
+    "qwen2-7b-instruct": {
+        "total_params": 7.0,
+        "active_params": 7.0,
+        "kwh/token": 0.08793920288122925
+    },
+    "qwen2.5-32b-instruct": {
+        "total_params": 32.0,
+        "active_params": 32.0,
+        "kwh/token": 0.11827374467771612
+    },
+    "qwen2.5-7b-instruct": {
+        "total_params": 7.0,
+        "active_params": 7.0,
+        "kwh/token": 0.08793920288122925
+    },
+    "qwen2.5-coder-32b-instruct": {
+        "total_params": null,
+        "active_params": null,
+        "kwh/token": null
+    },
+    "qwen3-30b-a3b": {
+        "total_params": 30.0,
+        "active_params": 3.0,
+        "kwh/token": 0.08308567619379137
+    },
+    "qwen3-32b": {
+        "total_params": 32.0,
+        "active_params": 32.0,
+        "kwh/token": 0.1182737446777161
+    },
+    "qwen3-coder-next": {
+        "total_params": 80.0,
+        "active_params": 3.0,
+        "kwh/token": 0.3323427047751655
+    },
+    "qwen3-max-2025-09-23": {
+        "total_params": 1000.0,
+        "active_params": 32.0,
+        "kwh/token": 3.7847598296869154
+    },
+    "qwen3.5-35b-a3b": {
+        "total_params": 35.0,
+        "active_params": 3.0,
+        "kwh/token": 0.1661713523875827
+    },
+    "qwen3.5-397b-a17b": {
+        "total_params": 397.0,
+        "active_params": 17.0,
+        "kwh/token": 1.6011683135971837
+    },
+    "qwq-32b": {
+        "total_params": 32.0,
+        "active_params": 32.0,
+        "kwh/token": 0.1182737446777161
+    },
+    "trinity-large-preview": {
+        "total_params": 398.0,
+        "active_params": 13.0,
+        "kwh/token": 1.5235118865981778
+    }
+}
