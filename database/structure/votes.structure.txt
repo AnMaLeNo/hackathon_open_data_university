@@ -1,0 +1,47 @@
+id                                           int64
+timestamp                           datetime64[us]
+model_a_name                                   str
+model_b_name                                   str
+model_pair_name                             object
+chosen_model_name                              str
+opening_msg                                    str
+both_equal                                  object
+conversation_a                              object
+conversation_b                              object
+conv_turns                                   int64
+selected_category                              str
+is_unedited_prompt                            bool
+conversation_pair_id                           str
+session_hash                                   str
+visitor_id                                     str
+conv_comments_a                                str
+conv_comments_b                                str
+conv_useful_a                                 bool
+conv_useful_b                                 bool
+conv_creative_a                               bool
+conv_creative_b                               bool
+conv_clear_formatting_a                       bool
+conv_clear_formatting_b                       bool
+conv_incorrect_a                              bool
+conv_incorrect_b                              bool
+conv_superficial_a                            bool
+conv_superficial_b                            bool
+conv_instructions_not_followed_a              bool
+conv_instructions_not_followed_b              bool
+system_prompt_b                                str
+system_prompt_a                                str
+conv_complete_a                               bool
+conv_complete_b                               bool
+dtype: object
+Index(['id', 'timestamp', 'model_a_name', 'model_b_name', 'model_pair_name',
+       'chosen_model_name', 'opening_msg', 'both_equal', 'conversation_a',
+       'conversation_b', 'conv_turns', 'selected_category',
+       'is_unedited_prompt', 'conversation_pair_id', 'session_hash',
+       'visitor_id', 'conv_comments_a', 'conv_comments_b', 'conv_useful_a',
+       'conv_useful_b', 'conv_creative_a', 'conv_creative_b',
+       'conv_clear_formatting_a', 'conv_clear_formatting_b',
+       'conv_incorrect_a', 'conv_incorrect_b', 'conv_superficial_a',
+       'conv_superficial_b', 'conv_instructions_not_followed_a',
+       'conv_instructions_not_followed_b', 'system_prompt_b',
+       'system_prompt_a', 'conv_complete_a', 'conv_complete_b'],
+      dtype='str')

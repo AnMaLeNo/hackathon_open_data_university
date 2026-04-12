@@ -1,0 +1,44 @@
+id                                    int64
+timestamp                    datetime64[us]
+session_hash                            str
+visitor_id                              str
+conv_turns                            int64
+conversation_pair_id                    str
+model_pair_name                      object
+opening_msg                             str
+model_a_name                            str
+model_b_name                            str
+conv_a_id                               str
+conv_b_id                               str
+conversation_a                       object
+conversation_b                       object
+model_pos                               str
+refers_to_model                         str
+refers_to_conv_id                       str
+system_prompt                           str
+response_content                        str
+question_content                        str
+msg_index                             int64
+msg_rank                              int64
+question_id                             str
+liked                                  bool
+disliked                               bool
+comment                                 str
+useful                               object
+complete                               bool
+creative                             object
+clear_formatting                     object
+incorrect                            object
+superficial                          object
+instructions_not_followed            object
+dtype: object
+Index(['id', 'timestamp', 'session_hash', 'visitor_id', 'conv_turns',
+       'conversation_pair_id', 'model_pair_name', 'opening_msg',
+       'model_a_name', 'model_b_name', 'conv_a_id', 'conv_b_id',
+       'conversation_a', 'conversation_b', 'model_pos', 'refers_to_model',
+       'refers_to_conv_id', 'system_prompt', 'response_content',
+       'question_content', 'msg_index', 'msg_rank', 'question_id', 'liked',
+       'disliked', 'comment', 'useful', 'complete', 'creative',
+       'clear_formatting', 'incorrect', 'superficial',
+       'instructions_not_followed'],
+      dtype='str')

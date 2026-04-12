@@ -1,0 +1,41 @@
+id                                     int64
+timestamp                     datetime64[us]
+session_hash                             str
+visitor_id                               str
+mode                                     str
+custom_models_selection               object
+conv_turns                             int64
+conversation_pair_id                     str
+model_pair_name                          str
+opening_msg                              str
+model_a_name                             str
+model_b_name                             str
+conv_a_id                                str
+conv_b_id                                str
+system_prompt_a                          str
+system_prompt_b                          str
+conversation_a                        object
+conversation_b                        object
+total_conv_a_output_tokens             int64
+total_conv_b_output_tokens             int64
+short_summary                            str
+keywords                              object
+categories                            object
+languages                             object
+model_a_total_params                 float64
+model_b_total_params                 float64
+model_a_active_params                float64
+model_b_active_params                float64
+total_conv_a_kwh                     float64
+total_conv_b_kwh                     float64
+dtype: object
+Index(['id', 'timestamp', 'session_hash', 'visitor_id', 'mode',
+       'custom_models_selection', 'conv_turns', 'conversation_pair_id',
+       'model_pair_name', 'opening_msg', 'model_a_name', 'model_b_name',
+       'conv_a_id', 'conv_b_id', 'system_prompt_a', 'system_prompt_b',
+       'conversation_a', 'conversation_b', 'total_conv_a_output_tokens',
+       'total_conv_b_output_tokens', 'short_summary', 'keywords', 'categories',
+       'languages', 'model_a_total_params', 'model_b_total_params',
+       'model_a_active_params', 'model_b_active_params', 'total_conv_a_kwh',
+       'total_conv_b_kwh'],
+      dtype='str')
