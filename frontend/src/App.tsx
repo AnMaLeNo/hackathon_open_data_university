@@ -27,6 +27,7 @@ interface ApiResponse {
   modele_recommande?: string;
   score_topsis?: number;
   classement_complet?: [string, number][];
+  questions_par_modele?: Record<string, string[]>;
 }
 
 const AHP_PROFILES = {
@@ -311,19 +312,29 @@ function App() {
 
                     return (
                       <div key={modele} className={`ranking-item ${index === 0 ? 'top-1' : ''}`}>
-                        <div className="rank">#{index + 1}</div>
-                        <div className="model-name" style={{ display: 'flex', flexDirection: 'column' }}>
-                          <span>{modele}</span>
-                          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 'normal', marginTop: '4px' }}>
-                            Volume de support : {volume} évaluation{volume > 1 ? 's' : ''}
-                          </span>
-                        </div>
-                        <span style={{
-                          fontSize: '0.8rem', fontWeight: 700, padding: '3px 10px',
-                          borderRadius: '20px', color: getSemanticRating(score).color,
-                          background: getSemanticRating(score).bgColor, whiteSpace: 'nowrap'
-                        }}>{getSemanticRating(score).label}</span>
-                      </div>
+                         <div className="rank">#{index + 1}</div>
+                         <div className="model-name" style={{ display: 'flex', flexDirection: 'column' }}>
+                           <span>{modele}</span>
+                           <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 'normal', marginTop: '4px' }}>
+                             Volume de support : {volume} évaluation{volume > 1 ? 's' : ''}
+                           </span>
+                           {result.questions_par_modele?.[modele] && result.questions_par_modele[modele].length > 0 && (
+                             <ul className="inline-matched-questions">
+                               {result.questions_par_modele[modele].map((q, qi) => (
+                                 <li key={qi} className="inline-matched-question">
+                                   <span className="inline-q-index">{qi + 1}</span>
+                                   <span className="inline-q-text">{q}</span>
+                                 </li>
+                               ))}
+                             </ul>
+                           )}
+                         </div>
+                         <span style={{
+                           fontSize: '0.8rem', fontWeight: 700, padding: '3px 10px',
+                           borderRadius: '20px', color: getSemanticRating(score).color,
+                           background: getSemanticRating(score).bgColor, whiteSpace: 'nowrap'
+                         }}>{getSemanticRating(score).label}</span>
+                       </div>
                     );
                   })}
               </div>
@@ -360,7 +371,19 @@ function App() {
                   {result.classement_complet.map((item, index) => (
                     <div key={item[0]} className={`ranking-item ${index === 0 ? 'top-1' : ''}`}>
                       <div className="rank">#{index + 1}</div>
-                      <div className="model-name">{item[0]}</div>
+                      <div className="model-name" style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span>{item[0]}</span>
+                        {result.questions_par_modele?.[item[0]] && result.questions_par_modele[item[0]].length > 0 && (
+                          <ul className="inline-matched-questions">
+                            {result.questions_par_modele[item[0]].map((q: string, qi: number) => (
+                              <li key={qi} className="inline-matched-question">
+                                <span className="inline-q-index">{qi + 1}</span>
+                                <span className="inline-q-text">{q}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
                       <span style={{
                         fontSize: '0.8rem', fontWeight: 700, padding: '3px 10px',
                         borderRadius: '20px', color: getTopsisRating(item[1]).color,
@@ -373,7 +396,6 @@ function App() {
             )}
           </div>
         )}
-
       </div>
     </div>
   );

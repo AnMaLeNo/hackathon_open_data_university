@@ -120,21 +120,34 @@ async def evaluer_prompt(request: PromptRequest):
             score_threshold=request.score_threshold
         )
 
-        # 3. Analyse Sémantique
+        # 3. Groupement des question_content par modèle (avant agrégation)
+        questions_par_modele: dict = {}
+        for r in resultats:
+            modele = r.get("refers_to_model")
+            question = r.get("question_content")
+            if modele and question:
+                if modele not in questions_par_modele:
+                    questions_par_modele[modele] = []
+                if question not in questions_par_modele[modele] and len(questions_par_modele[modele]) < 3:
+                    questions_par_modele[modele].append(question)
+
+        # 4. Analyse Sémantique
         if not resultats:
             return {
                 "message": "Aucune similarité trouvée.",
                 "prompt": request.prompt,
-                "recompenses": {}
+                "recompenses": {},
+                "questions_par_modele": {}
             }
 
         analyse = modeliser_recompense_semantique(resultats)
 
-        # 4. Retour au front-end
+        # 5. Retour au front-end
         return {
             "message": "Analyse réussie",
             "prompt": request.prompt,
-            "recompenses": analyse
+            "recompenses": analyse,
+            "questions_par_modele": questions_par_modele
         }
 
     except Exception as e:
@@ -168,13 +181,25 @@ async def obtenir_meilleur_modele(request: RoutageRequest):
                 "prompt": request.prompt,
                 "modele_recommande": None,
                 "score_topsis": None,
-                "classement_complet": []
+                "classement_complet": [],
+                "questions_par_modele": {}
             }
 
-        # 2. Calcul du score sémantique de base
+        # 2. Groupement des question_content par modèle (avant agrégation)
+        questions_par_modele: dict = {}
+        for r in resultats:
+            modele = r.get("refers_to_model")
+            question = r.get("question_content")
+            if modele and question:
+                if modele not in questions_par_modele:
+                    questions_par_modele[modele] = []
+                if question not in questions_par_modele[modele] and len(questions_par_modele[modele]) < 3:
+                    questions_par_modele[modele].append(question)
+
+        # 3. Calcul du score sémantique de base
         resultats_phase_2 = modeliser_recompense_semantique(resultats)
 
-        # 3. Préparation pour TOPSIS
+        # 4. Préparation pour TOPSIS
         # Conversion de la liste envoyée par le front-end en matrice Numpy
         matrice_ahp_np = np.array(request.matrice_ahp)
         
@@ -184,7 +209,7 @@ async def obtenir_meilleur_modele(request: RoutageRequest):
         # Directions : 1 (Maximiser sémantique), -1 (Minimiser énergie), 1 (Maximiser souveraineté)
         vecteur_directions = [1, -1, 1]
 
-        # 4. Exécution du routage TOPSIS
+        # 5. Exécution du routage TOPSIS
         classement_final = optimiser_routage_topsis(
             resultats_phase_2=resultats_phase_2,
             metriques_physiques=metriques_physiques,
@@ -203,7 +228,8 @@ async def obtenir_meilleur_modele(request: RoutageRequest):
             "prompt": request.prompt,
             "modele_recommande": gagnant[0],
             "score_topsis": gagnant[1],
-            "classement_complet": classement_final
+            "classement_complet": classement_final,
+            "questions_par_modele": questions_par_modele
         }
 
     except ValueError as ve:
