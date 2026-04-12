@@ -5,3 +5,4 @@ venv/
 __pycache__/
 test_docker/
 *.parquet
+node_modules/
