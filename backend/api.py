@@ -127,7 +127,13 @@ async def obtenir_meilleur_modele(request: RoutageRequest):
         )
 
         if not resultats:
-            raise HTTPException(status_code=404, detail="Aucune donnée sémantique trouvée pour ce prompt.")
+            return {
+                "message": "Aucune donnée sémantique trouvée pour ce prompt.",
+                "prompt": request.prompt,
+                "modele_recommande": None,
+                "score_topsis": None,
+                "classement_complet": []
+            }
 
         # 2. Calcul du score sémantique de base
         resultats_phase_2 = modeliser_recompense_semantique(resultats)

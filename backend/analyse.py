@@ -118,9 +118,9 @@ def deriver_poids_ahp(matrice_comparaison: np.ndarray) -> np.ndarray:
         raise ValueError("La matrice AHP doit être carrée.")
     if np.any(matrice_comparaison <= 0):
         raise ValueError("La matrice AHP doit contenir uniquement des valeurs strictement positives.")
-    if not np.allclose(np.diag(matrice_comparaison), 1.0):
+    if not np.allclose(np.diag(matrice_comparaison), 1.0, atol=0.02):
         raise ValueError("La diagonale de la matrice AHP doit être unitaire (a_ii = 1).")
-    if not np.allclose(matrice_comparaison * matrice_comparaison.T, np.ones_like(matrice_comparaison)):
+    if not np.allclose(matrice_comparaison * matrice_comparaison.T, np.ones_like(matrice_comparaison), atol=0.02):
         raise ValueError("La matrice AHP doit être réciproque (a_ij = 1 / a_ji).")
     
     # Calcul du spectre de la matrice (valeurs propres et vecteurs propres)

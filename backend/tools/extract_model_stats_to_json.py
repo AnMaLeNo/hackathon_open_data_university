@@ -2,35 +2,6 @@ import pandas as pd
 import json
 import math
 
-def get_souverainete_score(model_name: str) -> float:
-    """
-    Analyse le nom du modèle et retourne un score de souveraineté.
-    1.0 pour les modèles français/européens, 0.0 pour les autres.
-    """
-    if not model_name:
-        return 0.0
-        
-    name_lower = str(model_name).lower()
-    
-    # Mots-clés basés sur les modèles identifiés dans ton dataset
-    mots_cles_souverains = [
-        "mistral",     # Famille Mistral
-        "mixtral",     # Mistral MoE
-        "ministral",   # Petits modèles Mistral
-        "chocolatine", # Modèle français
-        "eurollm",     # Initiative européenne
-        "apertus",     # Initiative open-source française
-        "magistral"    # Semble être une déclinaison/finetune francophone
-    ]
-    
-    # Si un des mots-clés est dans le nom du modèle, c'est un modèle souverain
-    for mot in mots_cles_souverains:
-        if mot in name_lower:
-            return 1.0
-            
-    # Sinon, on considère que c'est un modèle étranger (US, Chinois, etc.)
-    return 0.0
-
 
 def extract_model_stats_to_json(df):
     """
@@ -39,18 +10,18 @@ def extract_model_stats_to_json(df):
     et le score de souveraineté calculé automatiquement.
     """
     # 1. Isoler les données du modèle A et les renommer avec des noms génériques
-    df_a = df[[
-        'model_a_name', 'model_a_total_params', 'model_a_active_params', 
-        'total_conv_a_kwh', 'total_conv_a_output_tokens'
-    ]].copy()
-    df_a.columns = ['model_name', 'total_params', 'active_params', 'kwh', 'tokens']
+    cols_a = ['model_a_name', 'model_a_total_params', 'model_a_active_params', 'total_conv_a_kwh', 'total_conv_a_output_tokens']
+    if 'model_a_origin_country' in df.columns:
+        cols_a.append('model_a_origin_country')
+    df_a = df[cols_a].copy()
+    df_a.columns = ['model_name', 'total_params', 'active_params', 'kwh', 'tokens'] + (['origin_country'] if 'model_a_origin_country' in df.columns else [])
 
     # 2. Isoler les données du modèle B et les renommer de la même façon
-    df_b = df[[
-        'model_b_name', 'model_b_total_params', 'model_b_active_params', 
-        'total_conv_b_kwh', 'total_conv_b_output_tokens'
-    ]].copy()
-    df_b.columns = ['model_name', 'total_params', 'active_params', 'kwh', 'tokens']
+    cols_b = ['model_b_name', 'model_b_total_params', 'model_b_active_params', 'total_conv_b_kwh', 'total_conv_b_output_tokens']
+    if 'model_b_origin_country' in df.columns:
+        cols_b.append('model_b_origin_country')
+    df_b = df[cols_b].copy()
+    df_b.columns = ['model_name', 'total_params', 'active_params', 'kwh', 'tokens'] + (['origin_country'] if 'model_b_origin_country' in df.columns else [])
 
     # 3. Fusionner les deux en un seul DataFrame vertical
     df_combined = pd.concat([df_a, df_b], ignore_index=True)
@@ -78,12 +49,21 @@ def extract_model_stats_to_json(df):
         else:
             kwh_per_token = None
 
-        # 5. Nettoyage pour le JSON et AJOUT DU SCORE DE SOUVERAINETÉ
+        # 5. Nettoyage pour le JSON et calcul du score de souveraineté basé sur l'origine formelle
+        score_souverainete = 0.0
+        if 'origin_country' in group.columns:
+            valid_origins = group['origin_country'].dropna()
+            if not valid_origins.empty:
+                country = str(valid_origins.iloc[0]).lower()
+                # On attribue le score si le pays d'origine est souverain (ex: france, europe)
+                if country in ['france', 'europe', 'eu']:
+                    score_souverainete = 1.0
+
         result_dict[str(model_name)] = {
             "total_params": float(total_params) if total_params and not math.isnan(total_params) else None,
             "active_params": float(active_params) if active_params and not math.isnan(active_params) else None,
             "kwh/token": float(kwh_per_token) if kwh_per_token and not math.isnan(kwh_per_token) else None,
-            "score_souverainete": get_souverainete_score(str(model_name))
+            "score_souverainete": score_souverainete
         }
 
     # 6. Convertir le dictionnaire en chaîne JSON formatée

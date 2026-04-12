@@ -86,11 +86,23 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status} ${response.statusText}`);
+        let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`;
+        try {
+          const errData = await response.json();
+          if (errData && errData.detail) {
+            errorMsg = errData.detail;
+          }
+        } catch (e) {}
+        throw new Error(errorMsg);
       }
 
       const data = await response.json();
-      setResult(data);
+      if (data.message && (!data.recompenses || Object.keys(data.recompenses).length === 0) && !data.modele_recommande) {
+        setError(data.message);
+        setResult(null);
+      } else {
+        setResult(data);
+      }
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Une erreur est survenue lors de la communication avec l\'API.');

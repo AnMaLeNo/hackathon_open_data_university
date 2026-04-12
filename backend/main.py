@@ -3,7 +3,7 @@ from qdrant_client import QdrantClient
 import json
 
 from qdrant_tools import rechercher_reactions_similaires, indexer_corpus, indexer_corpus_generique
-from analyse import analyser_meilleure_ia, modeliser_recompense_semantique, optimiser_routage_topsis
+from analyse import modeliser_recompense_semantique, optimiser_routage_topsis
 
 import numpy as np
 from qdrant_client.models import Distance
