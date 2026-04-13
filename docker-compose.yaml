@@ -16,9 +16,8 @@ services:
       - QDRANT_URL=http://qdrant:6333
     volumes:
       # Montage des données utiles pour permettre la ré-indexation sans rebuild
-      - ./database:/app/database
-      - ./base_vectorielle:/app/base_vectorielle
-      - ./database:/app/database
+      - ./backend/database:/app/database
+      - ./backend/base_vectorielle:/app/base_vectorielle
 
   frontend:
     build:
