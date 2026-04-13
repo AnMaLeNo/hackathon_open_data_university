@@ -55,7 +55,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
 
   // États pour le Routeur TOPSIS
-  const [routingMode, setRoutingMode] = useState<'classic' | 'topsis'>('topsis');
+  const [routingMode, setRoutingMode] = useState<'classic' | 'topsis'>('classic');
   const [topsisInputMode, setTopsisInputMode] = useState<'cards' | 'sliders'>('cards');
   const [selectedProfile, setSelectedProfile] = useState<'precision' | 'green' | 'sovereignty'>('precision');
   const [showMatchedQuestions, setShowMatchedQuestions] = useState(true);
@@ -145,17 +145,17 @@ function App() {
         <div className="mode-tabs">
           <button
             type="button"
-            className={`tab-btn ${routingMode === 'topsis' ? 'active' : ''}`}
-            onClick={() => { setRoutingMode('topsis'); setResult(null); }}
-          >
-            <Zap size={18} /> Analyse par Compromis
-          </button>
-          <button
-            type="button"
             className={`tab-btn ${routingMode === 'classic' ? 'active' : ''}`}
             onClick={() => { setRoutingMode('classic'); setResult(null); }}
           >
             <Activity size={18} /> Analyse Clasique
+          </button>
+          <button
+            type="button"
+            className={`tab-btn ${routingMode === 'topsis' ? 'active' : ''}`}
+            onClick={() => { setRoutingMode('topsis'); setResult(null); }}
+          >
+            <Zap size={18} /> Analyse par Compromis
           </button>
         </div>
 
@@ -300,16 +300,16 @@ function App() {
                 type="button"
                 className={`matched-q-toggle ${showMatchedQuestions ? 'active' : ''}`}
                 onClick={() => setShowMatchedQuestions(v => !v)}
-                title="Les questions de notre base qui ont le mieux matché sémantiquement avec votre prompt"
+                title="Affiche les questions similaires et le détail du calcul"
               >
                 {showMatchedQuestions ? <EyeOff size={14} /> : <Eye size={14} />}
-                {showMatchedQuestions ? 'Masquer les requêtes sources' : 'Voir les requêtes sources'}
+                {showMatchedQuestions ? 'Masquer les détails' : 'Voir les détails'}
               </button>
             </div>
             {showMatchedQuestions && (
               <p className="matched-q-hint">
                 💡 <strong>Comment lire ces résultats ?</strong><br />
-                • <strong>Le score entre parenthèses (ex: 0.850)</strong> indique à quel point ces <strong>questions similaires</strong> se rapprochent de votre prompt.<br />
+                • <strong>Le score entre parenthèses (ex: 0.850)</strong> indique à quel point ces <strong>questions similaires</strong> se rapprochent de votre prompt <em>(limitées à 3 maximum pour ne pas surcharger l'affichage)</em>.<br />
                 • <strong>Le badge de couleur (Bon, Neutre...)</strong> indique la performance de l'IA, calculée d'après les votes laissés par les utilisateurs sur ces questions spécifiques.
               </p>
             )}
@@ -392,16 +392,16 @@ function App() {
                     type="button"
                     className={`matched-q-toggle ${showMatchedQuestions ? 'active' : ''}`}
                     onClick={() => setShowMatchedQuestions(v => !v)}
-                    title="Les questions de notre base qui ont le mieux matché sémantiquement avec votre prompt"
+                    title="Affiche les questions similaires et le détail du calcul"
                   >
                     {showMatchedQuestions ? <EyeOff size={14} /> : <Eye size={14} />}
-                    {showMatchedQuestions ? 'Masquer les requêtes sources' : 'Voir les requêtes sources'}
+                    {showMatchedQuestions ? 'Masquer les détails' : 'Voir les détails'}
                   </button>
                 </div>
                 {showMatchedQuestions && (
                   <p className="matched-q-hint">
                     💡 <strong>Comment lire ces résultats ?</strong><br />
-                    • <strong>Le score entre parenthèses (ex: 0.850)</strong> indique à quel point ces <strong>questions similaires</strong> se rapprochent de votre prompt.<br />
+                    • <strong>Le score entre parenthèses (ex: 0.850)</strong> indique à quel point ces <strong>questions similaires</strong> se rapprochent de votre prompt <em>(limitées à 3 maximum pour ne pas surcharger l'affichage)</em>.<br />
                     • <strong>Le badge de couleur (Bon, Neutre...)</strong> indique la performance de l'IA, calculée d'après les votes laissés par les utilisateurs sur ces questions spécifiques.
                   </p>
                 )}
