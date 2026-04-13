@@ -53,7 +53,7 @@ Bien que nous fournissions la base pré-calculée, vous pouvez régénérer l'en
 
 **1. Préparation** Placez vos fichiers bruts (`reactions.parquet` et `conversations.parquet`) dans le dossier `backend/database/`.
 
-**2. Calcul des métriques physiques** Ce script utilise `conversations.parquet` pour calculer la consommation énergétique moyenne et la latence par modèle.
+**2. Calcul des métriques physiques** Ce script utilise `conversations.parquet` pour calculer la consommation énergétique moyenne (kWh/token) et la souveraineté par modèle.
 
 Bash
 
@@ -90,4 +90,6 @@ Bash
     
     `docker-compose up -d --build`
     
-2. **Initialiser la base de données :** Placez les fichiers `.parquet` téléchargés dans les dossier `database` et `base_vectorielle` respectif du backend. L'indexation dans Qdrant s'effectue automatiquement au lancement du serveur.
+2. **Initialiser la base de données :** Placez les fichiers `.parquet` téléchargés dans les dossiers `database` et `base_vectorielle` respectifs du backend. L'indexation dans Qdrant s'effectue automatiquement au lancement du serveur.
+
+3. **Accéder à l'application :** Ouvrez votre navigateur et rendez-vous sur l'adresse `http://localhost:8078`.
