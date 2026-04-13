@@ -13,7 +13,7 @@ model = SentenceTransformer("BAAI/bge-m3", device=device)
 
 # 2. Chargement des données
 print("Chargement du fichier parquet...")
-df = pd.read_parquet("./../database/reactions.parquet")
+df = pd.read_parquet("./backend/database/reactions.parquet")
 
 def clean_text(x):
     if isinstance(x, str):

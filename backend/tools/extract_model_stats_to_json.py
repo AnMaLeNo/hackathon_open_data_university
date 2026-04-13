@@ -71,7 +71,7 @@ def extract_model_stats_to_json(df):
 
 if __name__ == "__main__":
     # 1. Charger le fichier parquet
-    df = pd.read_parquet('./database/conversations.parquet')
+    df = pd.read_parquet('./backend/database/conversations.parquet')
 
     # 2. Appliquer la fonction
     json_result = extract_model_stats_to_json(df)
