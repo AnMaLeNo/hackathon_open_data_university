@@ -308,7 +308,9 @@ function App() {
             </div>
             {showMatchedQuestions && (
               <p className="matched-q-hint">
-                💡 Ces requêtes sont les questions de notre base de données dont le sens est le plus proche de votre prompt. Elles ont servi à calculer les scores ci-dessous.
+                💡 <strong>Comment lire ces résultats ?</strong><br />
+                • <strong>Le score entre parenthèses (ex: 0.850)</strong> indique à quel point ces <strong>questions similaires</strong> se rapprochent de votre prompt.<br />
+                • <strong>Le badge de couleur (Bon, Neutre...)</strong> indique la performance de l'IA, calculée d'après les votes laissés par les utilisateurs sur ces questions spécifiques.
               </p>
             )}
 
@@ -398,7 +400,9 @@ function App() {
                 </div>
                 {showMatchedQuestions && (
                   <p className="matched-q-hint">
-                    💡 Ces requêtes sont les questions de notre base de données dont le sens est le plus proche de votre prompt. Elles ont servi à calculer les scores ci-dessous.
+                    💡 <strong>Comment lire ces résultats ?</strong><br />
+                    • <strong>Le score entre parenthèses (ex: 0.850)</strong> indique à quel point ces <strong>questions similaires</strong> se rapprochent de votre prompt.<br />
+                    • <strong>Le badge de couleur (Bon, Neutre...)</strong> indique la performance de l'IA, calculée d'après les votes laissés par les utilisateurs sur ces questions spécifiques.
                   </p>
                 )}
                 <div className="ranking-list">
