@@ -55,27 +55,26 @@ Bien que nous fournissions la base pré-calculée, vous pouvez régénérer l'en
 
 **2. Calcul des métriques physiques** Ce script utilise `conversations.parquet` pour calculer la consommation énergétique moyenne (kWh/token) et la souveraineté par modèle.
 
-Bash
-
-`python backend/tools/extract_model_stats_to_json.py`
+```bash
+python backend/tools/extract_model_stats_to_json.py
+```
 
 - **Sortie** : `backend/metriques_physiques.json`.
 
 **3. Génération des vecteurs** Exécutez le script de vectorisation. Il va transformer les textes des questions (`reactions.parquet`) en coordonnées mathématiques.
 
-Bash
-
-`python backend/tools/embeddings.py`
-
+```bash
+python backend/tools/embeddings.py
+```
 - **Fonctionnement :** Le script génère de multiples petits fichiers au fur et à mesure. Cette approche permet d'arrêter le script à tout moment sans perdre le travail déjà effectué.
 - **Sécurité :** En cas de coupure (matérielle ou manuelle), le script reprendra automatiquement là où il s'est arrêté lors de la prochaine exécution.
 - **Note technique :** Nécessite `sentence-transformers` et idéalement un GPU pour des performances acceptables.
 
 **4. Fusion et finalisation de la base** Ce script assemble les vecteurs générés avec les métadonnées de feedback pour créer le fichier d'indexation.
 
-Bash
-
-`python backend/tools/fusion_embeddings.py`
+```bash
+python backend/tools/fusion_embeddings.py
+```
 
 - **Sortie** : `base_vectorielle_complete.parquet`.
 
@@ -86,9 +85,11 @@ Bash
 
 ## Installation
 
-1. **Démarrer l'infrastructure :**Bash
-    
-    `docker-compose up -d --build`
+1. **Démarrer l'infrastructure :**
+
+```bash
+docker-compose up -d --build
+```
     
 2. **Initialiser la base de données :** Placez les fichiers `.parquet` téléchargés dans les dossiers `database` et `base_vectorielle` respectifs du backend. L'indexation dans Qdrant s'effectue automatiquement au lancement du serveur.
 
